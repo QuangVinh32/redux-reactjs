@@ -50,7 +50,7 @@ function App() {
     <div className="min-h-screen bg-[#060816] relative overflow-hidden">
 
       {/* Background */}
-      
+
       {/* Main */}
       <div className="relative z-10 max-w-4xl mx-auto  scale-[0.9] origin-top">
 
@@ -135,12 +135,12 @@ function App() {
             </div>
 
             {/* Counter */}
-          <CounterDisplay
-            count={count}
-            textColor={textColor}
-            fontFamily={fontFamily}
-            fontSize={fontSize}
-          />
+            <CounterDisplay
+              count={count}
+              textColor={textColor}
+              fontFamily={fontFamily}
+              fontSize={fontSize}
+            />
 
             {/* Buttons */}
             <CounterButtons
@@ -188,27 +188,27 @@ function App() {
 
             <div className="bg-white/10 border border-white/10 backdrop-blur-2xl rounded-[26px] p-5 shadow-2xl">
 
-  <h2 className="text-white text-lg font-bold mb-5">
-    Text Size
-  </h2>
+              <h2 className="text-white text-lg font-bold mb-5">
+                Text Size
+              </h2>
 
-  <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-3 gap-3">
 
-    {sizes.map((size) => (
-      <button
-        key={size.name}
-        onClick={() =>
-          dispatch(changeSize(size.value))
-        }
-        className="bg-white/10 border border-white/10 py-3 rounded-xl text-white text-sm hover:bg-white/20 transition-all"
-      >
-        {size.name}
-      </button>
-    ))}
+                {sizes.map((size) => (
+                  <button
+                    key={size.name}
+                    onClick={() =>
+                      dispatch(changeSize(size.value))
+                    }
+                    className="bg-white/10 border border-white/10 py-3 rounded-xl text-white text-sm hover:bg-white/20 transition-all"
+                  >
+                    {size.name}
+                  </button>
+                ))}
 
-  </div>
+              </div>
 
-</div>
+            </div>
 
             {/* Fonts */}
             <div className="bg-white/10 border border-white/10 backdrop-blur-2xl rounded-[26px] p-5 shadow-2xl">
@@ -238,7 +238,7 @@ function App() {
               />
 
             </div>
-            
+
 
           </div>
 
