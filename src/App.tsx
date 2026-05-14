@@ -6,10 +6,7 @@ import {
   Type,
 } from "lucide-react";
 
-import CounterDisplay from "./component/CounterDisplay";
-import CounterButtons from "./component/CounterButtons";
-import ColorPicker from "./component/ColorPicker";
-import FontPicker from "./component/FontPicker";
+
 
 import {
   increment,
@@ -24,6 +21,10 @@ import {
   fonts,
   sizes,
 } from "./constants/CounterData";
+import CounterDisplay from "./component/CounterDisplay";
+import CounterButtons from "./component/CounterButtons";
+import ColorPicker from "./component/ColorPicker";
+import FontPicker from "./component/FontPicker";
 
 function App() {
 
@@ -209,7 +210,7 @@ function App() {
               </div>
 
             </div>
-
+{/* hello */}
             {/* Fonts */}
             <div className="bg-white/10 border border-white/10 backdrop-blur-2xl rounded-[26px] p-5 shadow-2xl">
 
