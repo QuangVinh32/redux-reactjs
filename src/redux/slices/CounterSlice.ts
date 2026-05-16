@@ -10,7 +10,7 @@ interface CounterState {
 
 const initialState: CounterState = {
   value: 0,
-  textColor: "white",
+  textColor: "#ec4899",
   fontFamily: "Arial",
   fontSize: "120px",
 };
@@ -36,6 +36,10 @@ const counterSlice = createSlice({
       } else {
         state.value -= 1;
       }
+    },
+
+    reset: (state) => {
+      state.value = 0;
     },
 
     changeColor: (
@@ -65,6 +69,7 @@ const counterSlice = createSlice({
 export const {
   increment,
   decrement,
+  reset,
   changeColor,
   changeFont,
   changeSize,

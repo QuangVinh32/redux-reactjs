@@ -14,18 +14,19 @@ function ColorPicker({
   onChangeColor,
 }: Props) {
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="flex gap-3 justify-center flex-wrap">
 
       {colors.map((color) => (
         <button
           key={color.name}
-          onClick={() =>
-            onChangeColor(color.value)
-          }
-          className={`bg-gradient-to-r ${color.bg} h-14 rounded-2xl text-white font-bold hover:scale-105 active:scale-95 transition-all shadow-lg`}
-        >
-          {color.name}
-        </button>
+          title={color.name}
+          onClick={() => onChangeColor(color.value)}
+          style={{
+            backgroundColor: color.value,
+            boxShadow: `6px 6px 14px ${color.value}55, -3px -3px 8px rgba(255,255,255,0.85)`,
+          }}
+          className="w-11 h-11 rounded-2xl hover:scale-115 active:scale-90 transition-all duration-200"
+        />
       ))}
 
     </div>

@@ -1,18 +1,12 @@
+import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-
-import {
-  Palette,
-  Sparkles,
-  Type,
-} from "lucide-react";
-
-
 
 import {
   increment,
   changeColor,
   changeFont,
   decrement,
+  reset,
   changeSize,
 } from "./redux/slices/CounterSlice";
 
@@ -25,8 +19,31 @@ import CounterDisplay from "./component/CounterDisplay";
 import CounterButtons from "./component/CounterButtons";
 import ColorPicker from "./component/ColorPicker";
 import FontPicker from "./component/FontPicker";
+import Dashboard from "./pages/Dashboard";
+
+type View = "counter" | "dashboard";
 
 function App() {
+  const [view, setView] = useState<View>("dashboard");
+
+  if (view === "dashboard") {
+    return (
+      <div className="relative">
+        <Dashboard />
+        <button
+          onClick={() => setView("counter")}
+          className="fixed bottom-12 right-4 z-50 px-3 py-1.5 bg-purple-500 hover:bg-purple-600 text-white text-xs font-semibold rounded-md shadow-lg"
+        >
+          → Counter
+        </button>
+      </div>
+    );
+  }
+
+  return <CounterView onSwitch={() => setView("dashboard")} />;
+}
+
+function CounterView({ onSwitch }: { onSwitch: () => void }) {
 
   const count = useSelector(
     (state: any) => state.counter.value
@@ -42,205 +59,108 @@ function App() {
 
   const fontSize = useSelector(
     (state: any) => state.counter.fontSize
-
   );
 
   const dispatch = useDispatch();
 
   return (
-    <div className="min-h-screen bg-[#060816] relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 flex items-center justify-center p-6 relative">
 
-      {/* Background */}
+      <button
+        onClick={onSwitch}
+        className="fixed top-4 right-4 z-50 px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-xs font-semibold rounded-md shadow-lg"
+      >
+        → Dashboard
+      </button>
 
-      {/* Main */}
-      <div className="relative z-10 max-w-4xl mx-auto  scale-[0.9] origin-top">
+      <div
+        className="w-full max-w-2xl bg-white/70 backdrop-blur-sm rounded-[44px] p-7"
+        style={{
+          boxShadow:
+            "18px 18px 50px rgba(199,210,254,0.55), -18px -18px 50px rgba(255,255,255,0.9)",
+        }}
+      >
 
-        {/* Header */}
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-4 mb-8">
-
-          {/* Left */}
-          <div className="text-center lg:text-left">
-
-            <div className="flex items-center justify-center lg:justify-start gap-1 mb-2">
-
-              <div className="w-10 h-10 rounded-2xl bg-cyan-500/20 border border-cyan-400/10 flex items-center justify-center">
-
-                <Sparkles
-                  className="text-cyan-400"
-                  size={20}
-                />
-
-              </div>
-
-              <h1 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
-                Redux Counter
-              </h1>
-
-            </div>
-
-            <p className="text-gray-400 text-sm">
-              Modern React + Redux Toolkit +
-              Tailwind CSS UI
-            </p>
-
-          </div>
-
-          {/* Right */}
-          <div className="bg-white/10 border border-white/10 backdrop-blur-2xl px-5 py-4 rounded-[26px] shadow-2xl">
-
-            <p className="text-gray-400 text-xs mb-1">
-              Current Font
-            </p>
-
-            <h2
-              style={{ fontFamily }}
-              className="text-white text-xl font-bold"
-            >
-              {fontFamily}
-            </h2>
-
-          </div>
-
+        {/* Title */}
+        <div className="text-center mb-5">
+          <h1 className="text-3xl font-black bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent tracking-tight">
+            Redux Counter
+          </h1>
+          <p className="text-purple-400 text-xs mt-1 font-semibold">
+            Tap • Play • Vibe
+          </p>
         </div>
 
-        {/* Layout */}
-        <div className="grid lg:grid-cols-3 gap-5">
+        {/* Counter display (inset) */}
+        <div
+          className="bg-white/80 rounded-[32px] p-6 mb-6 flex items-center justify-center min-h-[180px]"
+          style={{
+            boxShadow:
+              "inset 8px 8px 18px rgba(199,210,254,0.55), inset -8px -8px 18px rgba(255,255,255,0.95)",
+          }}
+        >
+          <CounterDisplay
+            count={count}
+            textColor={textColor}
+            fontFamily={fontFamily}
+            fontSize={fontSize}
+          />
+        </div>
 
-          {/* Left */}
-          <div className="lg:col-span-2 bg-white/10 border border-white/10 backdrop-blur-2xl rounded-[30px] p-5 sm:p-6 shadow-[0_20px_60px_rgba(0,0,0,0.45)]">
+        {/* Buttons */}
+        <div className="mb-7">
+          <CounterButtons
+            onIncrement={() => dispatch(increment())}
+            onDecrement={() => dispatch(decrement())}
+            onReset={() => dispatch(reset())}
+          />
+        </div>
 
-            {/* Top */}
-            <div className="flex items-center justify-between mb-6">
+        {/* Controls */}
+        <div className="space-y-5">
 
-              <div>
-
-                <h2 className="text-white text-xl font-bold">
-                  Counter Value
-                </h2>
-
-                <p className="text-gray-400 text-sm mt-1">
-                  Interactive Redux State
-                </p>
-
-              </div>
-
-              <div className="w-12 h-12 rounded-2xl bg-cyan-500/20 flex items-center justify-center">
-
-                <Sparkles
-                  className="text-cyan-400"
-                  size={18}
-                />
-
-              </div>
-
-            </div>
-
-            {/* Counter */}
-            <CounterDisplay
-              count={count}
-              textColor={textColor}
-              fontFamily={fontFamily}
-              fontSize={fontSize}
+          {/* Color */}
+          <div>
+            <p className="text-purple-500 text-xs font-bold uppercase tracking-widest text-center mb-3">
+              🎨 Color
+            </p>
+            <ColorPicker
+              colors={colors}
+              onChangeColor={(color) => dispatch(changeColor(color))}
             />
-
-            {/* Buttons */}
-            <CounterButtons
-              onIncrement={() =>
-                dispatch(increment())
-              }
-              onDecrement={() =>
-                dispatch(decrement())
-              }
-            />
-
           </div>
 
-          {/* Right */}
-          <div className="space-y-5">
-
-            {/* Colors */}
-            <div className="bg-white/10 border border-white/10 backdrop-blur-2xl rounded-[26px] p-5 shadow-2xl">
-
-              <div className="flex items-center gap-3 mb-5">
-
-                <div className="w-10 h-10 rounded-2xl bg-pink-500/20 flex items-center justify-center">
-
-                  <Palette
-                    className="text-pink-400"
-                    size={18}
-                  />
-
-                </div>
-
-                <h2 className="text-white text-lg font-bold">
-                  Text Colors
-                </h2>
-
-              </div>
-
-              <ColorPicker
-                colors={colors}
-                onChangeColor={(color) =>
-                  dispatch(changeColor(color))
-                }
-              />
-
+          {/* Size */}
+          <div>
+            <p className="text-purple-500 text-xs font-bold uppercase tracking-widest text-center mb-3">
+              📏 Size
+            </p>
+            <div className="flex gap-3 justify-center">
+              {sizes.map((size) => (
+                <button
+                  key={size.name}
+                  onClick={() => dispatch(changeSize(size.value))}
+                  className="px-5 py-2.5 rounded-2xl bg-white text-purple-600 font-bold text-sm hover:scale-105 active:scale-95 transition-all"
+                  style={{
+                    boxShadow:
+                      "5px 5px 12px rgba(199,210,254,0.6), -3px -3px 8px rgba(255,255,255,0.95)",
+                  }}
+                >
+                  {size.name}
+                </button>
+              ))}
             </div>
+          </div>
 
-            <div className="bg-white/10 border border-white/10 backdrop-blur-2xl rounded-[26px] p-5 shadow-2xl">
-
-              <h2 className="text-white text-lg font-bold mb-5">
-                Text Size
-              </h2>
-
-              <div className="grid grid-cols-3 gap-3">
-
-                {sizes.map((size) => (
-                  <button
-                    key={size.name}
-                    onClick={() =>
-                      dispatch(changeSize(size.value))
-                    }
-                    className="bg-white/10 border border-white/10 py-3 rounded-xl text-white text-sm hover:bg-white/20 transition-all"
-                  >
-                    {size.name}
-                  </button>
-                ))}
-
-              </div>
-
-            </div>
-{/* hello */}
-            {/* Fonts */}
-            <div className="bg-white/10 border border-white/10 backdrop-blur-2xl rounded-[26px] p-5 shadow-2xl">
-
-              <div className="flex items-center gap-3 mb-5">
-
-                <div className="w-10 h-10 rounded-2xl bg-cyan-500/20 flex items-center justify-center">
-
-                  <Type
-                    className="text-cyan-400"
-                    size={18}
-                  />
-
-                </div>
-
-                <h2 className="text-white text-lg font-bold">
-                  Font Style
-                </h2>
-
-              </div>
-
-              <FontPicker
-                fonts={fonts}
-                onChangeFont={(font) =>
-                  dispatch(changeFont(font))
-                }
-              />
-
-            </div>
-
-
+          {/* Font */}
+          <div>
+            <p className="text-purple-500 text-xs font-bold uppercase tracking-widest text-center mb-3">
+              ✍️ Font
+            </p>
+            <FontPicker
+              fonts={fonts}
+              onChangeFont={(font) => dispatch(changeFont(font))}
+            />
           </div>
 
         </div>

@@ -8,18 +8,18 @@ function FontPicker({
   onChangeFont,
 }: Props) {
   return (
-    <div className="space-y-4">
+    <div className="grid grid-cols-2 gap-3">
 
       {fonts.map((font) => (
         <button
           key={font}
-          onClick={() =>
-            onChangeFont(font)
-          }
+          onClick={() => onChangeFont(font)}
           style={{
             fontFamily: font,
+            boxShadow:
+              "5px 5px 12px rgba(199,210,254,0.6), -3px -3px 8px rgba(255,255,255,0.95)",
           }}
-          className="w-full bg-white/10 border border-white/10 py-4 rounded-2xl text-white text-lg hover:bg-white/20 hover:translate-x-1 active:scale-95 transition-all"
+          className="py-3 rounded-2xl bg-white text-purple-600 font-bold text-base hover:scale-105 active:scale-95 transition-all duration-200"
         >
           {font}
         </button>
