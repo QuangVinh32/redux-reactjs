@@ -8,7 +8,7 @@ export default function Header() {
   const cartCount = cart.reduce((sum: number, c: any) => sum + c.qty, 0);
 
   return (
-    <header className="bg-white border-b border-slate-200 shadow-sm">
+    <header className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 py-3 md:py-4">
         {/* Row 1: Logo + search (md+) + actions */}
         <div className="flex items-center gap-3 md:gap-6">
@@ -18,10 +18,10 @@ export default function Header() {
               BM
             </div>
             <div>
-              <div className="text-base md:text-xl font-black text-slate-900 leading-tight whitespace-nowrap">
-                SHOP <span className="text-emerald-600">BM</span>
+              <div className="text-base md:text-xl font-black text-slate-900 dark:text-white leading-tight whitespace-nowrap">
+                SHOP <span className="text-emerald-600 dark:text-emerald-400">BM</span>
               </div>
-              <div className="hidden md:block text-[10px] text-slate-500 leading-tight">
+              <div className="hidden md:block text-[10px] text-slate-500 dark:text-slate-400 leading-tight">
                 Giá Rẻ – Uy Tín – 24/7
               </div>
             </div>
@@ -45,7 +45,7 @@ export default function Header() {
               💳 Nạp tiền
             </Link>
 
-            <button className="relative p-2 md:p-2.5 rounded-lg hover:bg-slate-100 transition-colors">
+            <button className="relative p-2 md:p-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-colors">
               <span className="text-lg md:text-xl">🛒</span>
               {cartCount > 0 && (
                 <span className="absolute -top-0.5 -right-0.5 md:-top-1 md:-right-1 min-w-[18px] h-[18px] px-1 bg-rose-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
@@ -54,7 +54,7 @@ export default function Header() {
               )}
             </button>
 
-            <button className="relative p-2 md:p-2.5 rounded-lg hover:bg-slate-100 transition-colors">
+            <button className="relative p-2 md:p-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-colors">
               <span className="text-lg md:text-xl">🔔</span>
               <span className="absolute top-1.5 right-1.5 md:top-2 md:right-2 w-2 h-2 bg-rose-500 rounded-full"></span>
             </button>
@@ -92,7 +92,7 @@ function SearchInput({
         placeholder="Tìm BM, Via, Fanpage..."
         className={`w-full h-10 md:h-11 pl-10 md:pl-11 ${
           showButton ? "pr-32" : "pr-4"
-        } rounded-full border-2 border-emerald-100 focus:border-emerald-400 outline-none text-sm bg-slate-50 focus:bg-white transition-colors`}
+        } rounded-full border-2 border-emerald-100 dark:border-slate-700 focus:border-emerald-400 dark:focus:border-emerald-500 outline-none text-sm bg-slate-50 dark:bg-slate-800 focus:bg-white dark:focus:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-colors`}
       />
       <span className="absolute left-3.5 md:left-4 top-1/2 -translate-y-1/2 text-slate-400">
         🔍

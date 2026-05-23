@@ -44,25 +44,33 @@ export default function History() {
     return (
       <div className="max-w-7xl mx-auto px-4 py-16 text-center">
         <div className="text-6xl mb-4">🔒</div>
-        <h2 className="text-2xl font-black text-slate-800 mb-2">
+        <h2 className="text-2xl font-black text-slate-800 dark:text-white mb-2">
           Vui lòng đăng nhập
         </h2>
-        <p className="text-slate-500 mb-6">
+        <p className="text-slate-500 dark:text-slate-400 mb-6">
           Bạn cần đăng nhập để xem lịch sử đơn hàng.
         </p>
-        <Link
-          to="/shop"
-          className="inline-block px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-lg"
-        >
-          ← Về trang chủ
-        </Link>
+        <div className="flex items-center justify-center gap-3">
+          <Link
+            to="/shop/login"
+            className="px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-lg"
+          >
+            🔓 Đăng nhập
+          </Link>
+          <Link
+            to="/shop/register"
+            className="px-6 py-3 bg-white border-2 border-emerald-500 text-emerald-600 hover:bg-emerald-50 font-bold rounded-lg"
+          >
+            Đăng ký
+          </Link>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
-      <h1 className="text-2xl font-black text-slate-900 mb-6">📋 Lịch Sử Mua Hàng</h1>
+      <h1 className="text-2xl font-black text-slate-900 dark:text-white mb-6">📋 Lịch Sử Mua Hàng</h1>
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
@@ -74,22 +82,22 @@ export default function History() {
         ].map((s) => (
           <div
             key={s.label}
-            className="bg-white rounded-xl border border-slate-200 p-4"
+            className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4"
           >
             <div className="text-3xl mb-1">{s.icon}</div>
-            <div className={`text-2xl font-black text-${s.color}-600`}>
+            <div className={`text-2xl font-black text-${s.color}-600 dark:text-${s.color}-400`}>
               {s.value}
             </div>
-            <div className="text-xs text-slate-500">{s.label}</div>
+            <div className="text-xs text-slate-500 dark:text-slate-400">{s.label}</div>
           </div>
         ))}
       </div>
 
       {/* Bảng đơn hàng */}
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-slate-50 text-slate-600">
+            <thead className="bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
               <tr>
                 <th className="text-left px-4 py-3 font-semibold">Mã đơn</th>
                 <th className="text-left px-4 py-3 font-semibold">Thời gian</th>
@@ -100,27 +108,27 @@ export default function History() {
                 <th className="text-center px-4 py-3 font-semibold">Thao tác</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
               {mockOrders.map((o) => {
                 const product = products.find((p) => p.id === o.productId)!;
                 return (
-                  <tr key={o.id} className="hover:bg-slate-50">
-                    <td className="px-4 py-3 font-mono text-xs text-emerald-700">
+                  <tr key={o.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-300">
+                    <td className="px-4 py-3 font-mono text-xs text-emerald-700 dark:text-emerald-400">
                       {o.id}
                     </td>
-                    <td className="px-4 py-3 text-slate-600 whitespace-nowrap">
+                    <td className="px-4 py-3 whitespace-nowrap">
                       {o.date}
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         <span className="text-2xl">{product.image}</span>
-                        <span className="font-semibold text-slate-800">
+                        <span className="font-semibold text-slate-800 dark:text-slate-100">
                           {product.name}
                         </span>
                       </div>
                     </td>
                     <td className="px-4 py-3 text-center">{o.qty}</td>
-                    <td className="px-4 py-3 text-right font-bold text-rose-600">
+                    <td className="px-4 py-3 text-right font-bold text-rose-600 dark:text-rose-400">
                       {formatVnd(product.price * o.qty)}
                     </td>
                     <td className="px-4 py-3 text-center">

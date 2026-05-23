@@ -31,7 +31,7 @@ export default function Affiliate() {
         ].map((step, i) => (
           <div
             key={step.title}
-            className="bg-white rounded-xl border border-slate-200 p-6 text-center"
+            className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 text-center"
           >
             <div className="w-14 h-14 mx-auto mb-3 rounded-full bg-gradient-to-br from-amber-400 to-rose-500 flex items-center justify-center text-2xl shadow-lg">
               {step.icon}
@@ -39,20 +39,20 @@ export default function Affiliate() {
             <div className="text-xs font-bold text-amber-600 mb-1">
               BƯỚC {i + 1}
             </div>
-            <h3 className="font-black text-slate-800 mb-1">{step.title}</h3>
-            <p className="text-sm text-slate-500">{step.desc}</p>
+            <h3 className="font-black text-slate-800 dark:text-slate-100 mb-1">{step.title}</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400">{step.desc}</p>
           </div>
         ))}
       </div>
 
       <div className="grid lg:grid-cols-2 gap-5">
         <div className="bg-white rounded-xl border border-slate-200 p-6">
-          <h2 className="font-black text-slate-800 mb-4">🔗 Link giới thiệu của bạn</h2>
+          <h2 className="font-black text-slate-800 dark:text-slate-100 mb-4">🔗 Link giới thiệu của bạn</h2>
           <div className="flex gap-2">
             <input
               readOnly
               value="https://shopbm.demo/ref/demo_user"
-              className="flex-1 h-11 px-4 rounded-lg bg-slate-50 border-2 border-slate-200 text-sm font-mono"
+              className="flex-1 h-11 px-4 rounded-lg bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-sm font-mono"
             />
             <button className="px-5 h-11 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-sm">
               📋 Copy
@@ -64,11 +64,11 @@ export default function Affiliate() {
               { label: "Đăng ký", value: "47", color: "emerald" },
               { label: "Hoa hồng", value: "1.2tr", color: "amber" },
             ].map((s) => (
-              <div key={s.label} className="bg-slate-50 rounded-lg p-3 text-center">
-                <div className={`text-xl font-black text-${s.color}-600`}>
+              <div key={s.label} className="bg-slate-50 dark:bg-slate-800 rounded-lg p-3 text-center">
+                <div className={`text-xl font-black text-${s.color}-600 dark:text-${s.color}-400`}>
                   {s.value}
                 </div>
-                <div className="text-xs text-slate-500 mt-0.5">{s.label}</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{s.label}</div>
               </div>
             ))}
           </div>

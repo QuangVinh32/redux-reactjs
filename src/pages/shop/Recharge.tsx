@@ -18,14 +18,14 @@ export default function Recharge() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
-      <h1 className="text-2xl font-black text-slate-900 mb-6">💳 Nạp Tiền Vào Tài Khoản</h1>
+      <h1 className="text-2xl font-black text-slate-900 dark:text-white mb-6">💳 Nạp Tiền Vào Tài Khoản</h1>
 
       <div className="grid lg:grid-cols-[1fr_360px] gap-6">
         {/* Form chính */}
         <div className="space-y-5">
           {/* Phương thức */}
-          <div className="bg-white rounded-xl border border-slate-200 p-5">
-            <h2 className="font-bold text-slate-800 mb-4">
+          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+            <h2 className="font-bold text-slate-800 dark:text-slate-100 mb-4">
               1️⃣ Chọn phương thức thanh toán
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
@@ -35,12 +35,12 @@ export default function Recharge() {
                   onClick={() => setMethod(m.id)}
                   className={`p-4 rounded-xl border-2 transition-all ${
                     method === m.id
-                      ? "border-emerald-500 bg-emerald-50"
-                      : "border-slate-200 hover:border-emerald-300"
+                      ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-900/30"
+                      : "border-slate-200 dark:border-slate-700 hover:border-emerald-300"
                   }`}
                 >
                   <div className="text-3xl mb-1">{m.icon}</div>
-                  <div className="text-xs font-bold text-slate-800">{m.label}</div>
+                  <div className="text-xs font-bold text-slate-800 dark:text-slate-100">{m.label}</div>
                   <div
                     className={`text-xs mt-0.5 font-bold ${
                       m.bonus.startsWith("-") ? "text-rose-500" : "text-emerald-600"
@@ -54,8 +54,8 @@ export default function Recharge() {
           </div>
 
           {/* Mệnh giá */}
-          <div className="bg-white rounded-xl border border-slate-200 p-5">
-            <h2 className="font-bold text-slate-800 mb-4">2️⃣ Chọn mệnh giá</h2>
+          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+            <h2 className="font-bold text-slate-800 dark:text-slate-100 mb-4">2️⃣ Chọn mệnh giá</h2>
             <div className="grid grid-cols-3 md:grid-cols-6 gap-3 mb-4">
               {quickAmounts.map((a) => (
                 <button
@@ -64,7 +64,7 @@ export default function Recharge() {
                   className={`py-3 rounded-lg font-bold text-sm transition-all ${
                     amount === a
                       ? "bg-emerald-500 text-white"
-                      : "bg-slate-100 hover:bg-emerald-100 text-slate-700"
+                      : "bg-slate-100 dark:bg-slate-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 text-slate-700 dark:text-slate-200"
                   }`}
                 >
                   {formatVnd(a)}
@@ -72,12 +72,12 @@ export default function Recharge() {
               ))}
             </div>
             <label className="block">
-              <span className="text-xs text-slate-500 mb-1 block">Hoặc nhập số tiền tuỳ chọn:</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">Hoặc nhập số tiền tuỳ chọn:</span>
               <input
                 type="number"
                 value={amount}
                 onChange={(e) => setAmount(Number(e.target.value) || 0)}
-                className="w-full h-11 px-4 rounded-lg border-2 border-slate-200 focus:border-emerald-400 outline-none text-sm"
+                className="w-full h-11 px-4 rounded-lg border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:border-emerald-400 outline-none text-sm"
                 placeholder="Nhập số tiền..."
               />
             </label>
@@ -103,28 +103,28 @@ export default function Recharge() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl border border-slate-200 p-5">
-            <h3 className="font-bold text-slate-800 mb-3">📝 Tóm tắt giao dịch</h3>
+          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+            <h3 className="font-bold text-slate-800 dark:text-slate-100 mb-3">📝 Tóm tắt giao dịch</h3>
             <dl className="text-sm space-y-2">
               <div className="flex justify-between">
-                <dt className="text-slate-500">Phương thức:</dt>
-                <dd className="font-semibold text-slate-800">
+                <dt className="text-slate-500 dark:text-slate-400">Phương thức:</dt>
+                <dd className="font-semibold text-slate-800 dark:text-slate-100">
                   {rechargeMethods.find((m) => m.id === method)?.label}
                 </dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-slate-500">Số tiền:</dt>
-                <dd className="font-semibold text-slate-800">{formatVnd(amount)}</dd>
+                <dt className="text-slate-500 dark:text-slate-400">Số tiền:</dt>
+                <dd className="font-semibold text-slate-800 dark:text-slate-100">{formatVnd(amount)}</dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-slate-500">Khuyến mãi:</dt>
-                <dd className="font-semibold text-emerald-600">
+                <dt className="text-slate-500 dark:text-slate-400">Khuyến mãi:</dt>
+                <dd className="font-semibold text-emerald-600 dark:text-emerald-400">
                   {rechargeMethods.find((m) => m.id === method)?.bonus}
                 </dd>
               </div>
-              <div className="border-t border-slate-200 pt-2 flex justify-between text-base">
+              <div className="border-t border-slate-200 dark:border-slate-700 pt-2 flex justify-between text-base text-slate-800 dark:text-slate-100">
                 <dt className="font-bold">Tổng cộng:</dt>
-                <dd className="font-black text-rose-600">{formatVnd(amount)}</dd>
+                <dd className="font-black text-rose-600 dark:text-rose-400">{formatVnd(amount)}</dd>
               </div>
             </dl>
 

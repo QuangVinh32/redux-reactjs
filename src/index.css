@@ -1,2 +1,63 @@
 @import "tailwindcss";
 
+/* Class-based dark mode (Tailwind v4) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ===== Seasonal theme accents (CSS variables) ===== */
+:root {
+  --accent: oklch(0.65 0.15 162);
+  --accent-strong: oklch(0.55 0.18 162);
+  --accent-soft: oklch(0.95 0.04 162);
+}
+
+.theme-tet {
+  --accent: oklch(0.62 0.21 25);
+  --accent-strong: oklch(0.52 0.22 25);
+  --accent-soft: oklch(0.96 0.05 30);
+}
+
+.theme-christmas {
+  --accent: oklch(0.55 0.18 145);
+  --accent-strong: oklch(0.45 0.18 145);
+  --accent-soft: oklch(0.95 0.05 145);
+}
+
+.theme-halloween {
+  --accent: oklch(0.65 0.2 50);
+  --accent-strong: oklch(0.55 0.22 50);
+  --accent-soft: oklch(0.95 0.06 60);
+}
+
+/* ===== Seasonal decorations animation ===== */
+@keyframes fall {
+  0% {
+    transform: translateY(-20px) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0.6;
+  }
+}
+
+.snow-flake {
+  position: fixed;
+  top: -20px;
+  font-size: 16px;
+  pointer-events: none;
+  animation: fall linear infinite;
+  z-index: 30;
+}
+
+/* Halloween subtle vignette */
+.theme-halloween body,
+.theme-halloween .shop-root {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 140, 0, 0.05),
+    transparent 70%
+  );
+}

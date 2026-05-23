@@ -76,7 +76,7 @@ export default function Home() {
       </section>
 
       {/* QUICK STATS BAR */}
-      <section className="bg-white border-b border-slate-200">
+      <section className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
         <div className="max-w-7xl mx-auto px-4 py-4 grid grid-cols-2 md:grid-cols-4 gap-3">
           {[
             { icon: "⚡", title: "Giao hàng tức thì", desc: "Tự động 24/7" },
@@ -87,8 +87,8 @@ export default function Home() {
             <div key={it.title} className="flex items-center gap-3">
               <div className="text-3xl">{it.icon}</div>
               <div>
-                <div className="font-bold text-slate-800 text-sm">{it.title}</div>
-                <div className="text-xs text-slate-500">{it.desc}</div>
+                <div className="font-bold text-slate-800 dark:text-slate-100 text-sm">{it.title}</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400">{it.desc}</div>
               </div>
             </div>
           ))}
@@ -99,29 +99,29 @@ export default function Home() {
       <section className="max-w-7xl mx-auto px-4 py-10">
         <div className="flex items-end justify-between mb-6">
           <div>
-            <h2 className="text-2xl font-black text-slate-900">
+            <h2 className="text-2xl font-black text-slate-900 dark:text-white">
               🗂️ Danh Mục Sản Phẩm
             </h2>
-            <p className="text-sm text-slate-500 mt-1">
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
               Chọn danh mục bạn quan tâm
             </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-4">
           {categories.map((cat) => (
             <Link
               key={cat.id}
               to={`/shop/products?cat=${cat.id}`}
-              className="group bg-white rounded-xl border border-slate-200 hover:border-emerald-400 hover:shadow-lg transition-all p-4 text-center"
+              className="group bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-emerald-400 dark:hover:border-emerald-500 hover:shadow-lg transition-all p-4 text-center"
             >
               <div className="text-4xl mb-2 group-hover:scale-110 transition-transform">
                 {cat.icon}
               </div>
-              <div className="font-bold text-sm text-slate-800 group-hover:text-emerald-600">
+              <div className="font-bold text-sm text-slate-800 dark:text-slate-100 group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
                 {cat.name}
               </div>
-              <div className="text-[11px] text-slate-500 mt-1">
+              <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
                 {cat.count} sản phẩm
               </div>
             </Link>
@@ -130,26 +130,26 @@ export default function Home() {
       </section>
 
       {/* FEATURED – BM XÁC MINH */}
-      <section className="bg-gradient-to-r from-amber-50 to-rose-50 border-y border-amber-100">
+      <section className="bg-gradient-to-r from-amber-50 to-rose-50 dark:from-amber-950/30 dark:to-rose-950/30 border-y border-amber-100 dark:border-amber-900/40">
         <div className="max-w-7xl mx-auto px-4 py-10">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-2xl font-black text-slate-900 flex items-center gap-2">
+              <h2 className="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
                 🔥 SẢN PHẨM HOT
               </h2>
-              <p className="text-sm text-slate-500 mt-1">
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                 BM XMDT Real Full Giấy Tờ – Cháy hàng liên tục
               </p>
             </div>
             <Link
               to="/shop/products"
-              className="text-sm font-semibold text-emerald-600 hover:text-emerald-700"
+              className="text-sm font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700"
             >
               Xem tất cả →
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             {hotProducts.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}
@@ -161,22 +161,22 @@ export default function Home() {
       <section className="max-w-7xl mx-auto px-4 py-10">
         <div className="flex items-end justify-between mb-6">
           <div>
-            <h2 className="text-2xl font-black text-slate-900">
+            <h2 className="text-2xl font-black text-slate-900 dark:text-white">
               ✨ Sản Phẩm Mới Nhất
             </h2>
-            <p className="text-sm text-slate-500 mt-1">
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
               Mới về kho – Số lượng có hạn
             </p>
           </div>
           <Link
             to="/shop/products"
-            className="text-sm font-semibold text-emerald-600 hover:text-emerald-700"
+            className="text-sm font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700"
           >
             Xem tất cả →
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {newProducts.map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}

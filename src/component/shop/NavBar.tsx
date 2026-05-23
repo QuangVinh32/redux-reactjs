@@ -16,7 +16,7 @@ export default function NavBar() {
   const closeMobile = () => setMobileOpen(false);
 
   return (
-    <nav className="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white shadow-lg sticky top-0 z-40">
+    <nav className="bg-gradient-to-r from-emerald-600 to-emerald-700 dark:from-emerald-800 dark:to-emerald-900 text-white shadow-lg sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4">
         {/* ==== Mobile bar (< lg) ==== */}
         <div className="lg:hidden flex items-center justify-between py-2.5">

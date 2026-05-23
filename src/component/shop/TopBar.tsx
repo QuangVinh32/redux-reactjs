@@ -1,11 +1,23 @@
+import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { setCurrency, setLanguage, login, logout } from "../../redux/slices/ShopSlice";
+import {
+  setCurrency,
+  setLanguage,
+  logout,
+  setTheme,
+  type Theme,
+} from "../../redux/slices/ShopSlice";
 import { formatVnd } from "../../constants/ShopData";
 
 export default function TopBar() {
   const dispatch = useDispatch();
-  const { isLoggedIn, username, balance, discountPercent, currency, language } =
+  const { isLoggedIn, username, balance, discountPercent, currency, language, theme } =
     useSelector((s: any) => s.shop);
+
+  const toggleDarkLight = () => {
+    const next: Theme = theme === "dark" ? "light" : "dark";
+    dispatch(setTheme(next));
+  };
 
   return (
     <div className="bg-slate-900 text-slate-300 text-[11px] md:text-xs">
@@ -85,6 +97,24 @@ export default function TopBar() {
 
           <span className="hidden sm:inline text-slate-600">|</span>
 
+          {/* Theme toggle + Settings */}
+          <button
+            onClick={toggleDarkLight}
+            className="hover:text-white px-1.5 sm:px-2"
+            title="Đổi sáng/tối"
+          >
+            {theme === "dark" || theme === "halloween" ? "☀️" : "🌙"}
+          </button>
+          <Link
+            to="/shop/settings"
+            className="hover:text-white px-1.5 sm:px-2"
+            title="Cài đặt"
+          >
+            ⚙️
+          </Link>
+
+          <span className="hidden sm:inline text-slate-600">|</span>
+
           {/* User */}
           {isLoggedIn ? (
             <div className="flex items-center gap-2 md:gap-3">
@@ -103,15 +133,21 @@ export default function TopBar() {
               </button>
             </div>
           ) : (
-            <button
-              onClick={() =>
-                dispatch(login({ username: "demo_user", balance: 250000 }))
-              }
-              className="text-emerald-400 hover:text-emerald-300 font-semibold whitespace-nowrap"
-            >
-              <span className="hidden sm:inline">Đăng nhập / Đăng ký</span>
-              <span className="sm:hidden">Đăng nhập</span>
-            </button>
+            <div className="flex items-center gap-1.5 sm:gap-2 whitespace-nowrap">
+              <Link
+                to="/shop/login"
+                className="text-emerald-400 hover:text-emerald-300 font-semibold"
+              >
+                Đăng nhập
+              </Link>
+              <span className="hidden sm:inline text-slate-600">/</span>
+              <Link
+                to="/shop/register"
+                className="hidden sm:inline text-amber-400 hover:text-amber-300 font-semibold"
+              >
+                Đăng ký
+              </Link>
+            </div>
           )}
         </div>
       </div>
