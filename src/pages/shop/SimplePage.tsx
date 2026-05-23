@@ -24,7 +24,7 @@ export default function SimplePage({ title, icon, description }: Props) {
  Tiêu đề mẫu số {i + 1}
  </h3>
  <p className="text-sm text-slate-500 dark:text-slate-400">
- Nội dung trang "{title}" sẽ được cập nhật. Đây là khung UI mẫu
+ Nội dung trang"{title}" sẽ được cập nhật. Đây là khung UI mẫu
  để bạn dễ điền dữ liệu thật vào sau.
  </p>
  </div>

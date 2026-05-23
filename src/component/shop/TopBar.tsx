@@ -1,13 +1,13 @@
-import { Link } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { Sun, Moon, Settings as SettingsIcon } from "lucide-react";
+import { Link } from"react-router-dom";
+import { useSelector, useDispatch } from"react-redux";
+import { Sun, Moon, Settings as SettingsIcon } from"lucide-react";
 import {
  setCurrency, setLanguage,
  setTheme, logoutThunk,
  type Theme,
-} from "../../redux/slices/ShopSlice";
-import type { AppDispatch } from "../../redux/Store";
-import { formatVnd } from "../../constants/ShopData";
+} from"../../redux/slices/ShopSlice";
+import type { AppDispatch } from"../../redux/Store";
+import { formatVnd } from"../../constants/ShopData";
 
 export default function TopBar() {
  const dispatch = useDispatch<AppDispatch>();
@@ -15,7 +15,7 @@ export default function TopBar() {
  useSelector((s: any) => s.shop);
 
  const toggleDarkLight = () => {
- const next: Theme = theme === "dark" ? "light" : "dark";
+ const next: Theme = theme ==="dark" ?"light" :"dark";
  dispatch(setTheme(next));
  };
 
@@ -45,13 +45,13 @@ export default function TopBar() {
  <div className="flex items-center gap-0.5">
  <button
  onClick={() => dispatch(setLanguage("vi"))}
- className={`px-1.5 sm:px-2 py-0.5 ${language === "vi" ? "bg-white text-stone-900 font-semibold" : "hover:text-white"}`}
+ className={`px-1.5 sm:px-2 py-0.5 ${language ==="vi" ?"bg-white text-stone-900 font-semibold" :"hover:text-white"}`}
  >
  VI
  </button>
  <button
  onClick={() => dispatch(setLanguage("en"))}
- className={`px-1.5 sm:px-2 py-0.5 ${language === "en" ? "bg-white text-stone-900 font-semibold" : "hover:text-white"}`}
+ className={`px-1.5 sm:px-2 py-0.5 ${language ==="en" ?"bg-white text-stone-900 font-semibold" :"hover:text-white"}`}
  >
  EN
  </button>
@@ -63,13 +63,13 @@ export default function TopBar() {
  <div className="hidden sm:flex items-center gap-0.5">
  <button
  onClick={() => dispatch(setCurrency("VND"))}
- className={`px-2 py-0.5 ${currency === "VND" ? "bg-white text-stone-900 font-semibold" : "hover:text-white"}`}
+ className={`px-2 py-0.5 ${currency ==="VND" ?"bg-white text-stone-900 font-semibold" :"hover:text-white"}`}
  >
  VND
  </button>
  <button
  onClick={() => dispatch(setCurrency("USD"))}
- className={`px-2 py-0.5 ${currency === "USD" ? "bg-white text-stone-900 font-semibold" : "hover:text-white"}`}
+ className={`px-2 py-0.5 ${currency ==="USD" ?"bg-white text-stone-900 font-semibold" :"hover:text-white"}`}
  >
  USD
  </button>
@@ -79,7 +79,7 @@ export default function TopBar() {
 
  {/* Theme + Settings */}
  <button onClick={toggleDarkLight} className="hover:text-white p-1" title="Sáng/Tối">
- {theme === "dark" || theme === "halloween" ? <Sun size={14} /> : <Moon size={14} />}
+ {theme ==="dark" || theme ==="halloween" ? <Sun size={14} /> : <Moon size={14} />}
  </button>
  <Link to="/shop/settings" className="hover:text-white p-1" title="Cài đặt">
  <SettingsIcon size={14} />

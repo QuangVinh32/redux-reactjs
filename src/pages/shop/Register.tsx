@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { User, Phone, Mail, Lock, KeyRound, Tag, Eye, EyeOff } from "lucide-react";
-import { registerThunk } from "../../redux/slices/ShopSlice";
-import type { AppDispatch } from "../../redux/Store";
+import { useState } from"react";
+import { Link, useNavigate } from"react-router-dom";
+import { useDispatch, useSelector } from"react-redux";
+import { User, Phone, Mail, Lock, KeyRound, Tag, Eye, EyeOff } from"lucide-react";
+import { registerThunk } from"../../redux/slices/ShopSlice";
+import type { AppDispatch } from"../../redux/Store";
 
 type Form = {
  username: string;
@@ -16,12 +16,12 @@ type Form = {
 };
 
 const empty: Form = {
- username: "",
- email: "",
- phone: "",
- password: "",
- confirm: "",
- refCode: "",
+ username:"",
+ email:"",
+ phone:"",
+ password:"",
+ confirm:"",
+ refCode:"",
  agree: false,
 };
 
@@ -49,13 +49,13 @@ export default function Register() {
  return Math.min(s, 4);
  })();
 
- const strengthLabel = ["Quá yếu", "Yếu", "Trung bình", "Mạnh", "Rất mạnh"];
+ const strengthLabel = ["Quá yếu","Yếu","Trung bình","Mạnh","Rất mạnh"];
  const strengthColor = [
- "bg-slate-200",
- "bg-rose-500",
- "bg-amber-500",
- "bg-emerald-500",
- "bg-emerald-600",
+"bg-slate-200",
+"bg-rose-500",
+"bg-amber-500",
+"bg-emerald-500",
+"bg-emerald-600",
  ];
 
  const onSubmit = async (e: React.FormEvent) => {
@@ -104,13 +104,13 @@ export default function Register() {
 
  return (
  <div className="max-w-lg mx-auto px-4 py-8 md:py-12">
- <div className="bg-white dark:bg-slate-900 border border-stone-300 dark:border-slate-800 overflow-hidden font-serif">
+ <div className="bg-white dark:bg-slate-900 border border-stone-300 dark:border-slate-800 overflow-hidden">
  {/* Header */}
  <div className="bg-stone-900 dark:bg-stone-100 px-6 py-8 text-center text-white dark:text-stone-900 border-b border-stone-200 dark:border-slate-800">
- <div className="w-14 h-14 mx-auto border-2 border-white dark:border-stone-900 flex items-center justify-center font-serif text-xl font-bold mb-3">
+ <div className="w-14 h-14 mx-auto border-2 border-white dark:border-stone-900 flex items-center justify-center text-xl font-bold mb-3">
  BM
  </div>
- <h1 className="font-serif text-2xl font-bold tracking-wide">Đăng Ký Tài Khoản</h1>
+ <h1 className="text-2xl font-bold tracking-wide">Đăng Ký Tài Khoản</h1>
  <p className="text-stone-300 dark:text-stone-700 text-xs mt-2 uppercase tracking-[0.2em]">
  Tặng 50.000đ cho thành viên mới
  </p>
@@ -118,7 +118,7 @@ export default function Register() {
 
  <form onSubmit={onSubmit} className="p-6 space-y-4">
  {(error || authError) && (
- <div className="bg-rose-50 border border-rose-200 text-rose-700 text-sm px-3 py-2 ">
+ <div className="bg-rose-50 border border-rose-200 text-rose-700 text-sm px-3 py-2">
  {error || authError}
  </div>
  )}
@@ -137,7 +137,7 @@ export default function Register() {
  label="Số điện thoại *"
  icon={<Phone size={14} />}
  value={form.phone}
- onChange={(v) => set("phone", v.replace(/\D/g, ""))}
+ onChange={(v) => set("phone", v.replace(/\D/g,""))}
  placeholder="0987..."
  inputMode="numeric"
  />
@@ -158,7 +158,7 @@ export default function Register() {
  <Field
  label="Mật khẩu *"
  icon={<Lock size={14} />}
- type={showPwd ? "text" : "password"}
+ type={showPwd ?"text" :"password"}
  value={form.password}
  onChange={(v) => set("password", v)}
  placeholder="Ít nhất 6 ký tự"
@@ -182,7 +182,7 @@ export default function Register() {
  className={`h-1 ${
  i <= pwdStrength
  ? strengthColor[pwdStrength]
- : "bg-slate-200"
+ :"bg-slate-200"
  }`}
  />
  ))}
@@ -222,11 +222,11 @@ export default function Register() {
  className="accent-emerald-500 w-4 h-4 mt-0.5"
  />
  <span>
- Tôi đồng ý với{" "}
+ Tôi đồng ý với{""}
  <a href="#" className="text-emerald-600 dark:text-emerald-400 font-semibold hover:underline">
  Điều khoản sử dụng
- </a>{" "}
- và{" "}
+ </a>{""}
+ và{""}
  <a href="#" className="text-emerald-600 dark:text-emerald-400 font-semibold hover:underline">
  Chính sách bảo mật
  </a>
@@ -240,11 +240,11 @@ export default function Register() {
  disabled={authLoading}
  className="w-full h-12 bg-slate-900 hover:bg-slate-800 disabled:opacity-60 text-white font-semibold tracking-wide transition-colors"
  >
- {authLoading ? "Đang xử lý..." : "Đăng ký"}
+ {authLoading ?"Đang xử lý..." :"Đăng ký"}
  </button>
 
  <div className="text-center text-sm text-slate-600 dark:text-slate-400 pt-2">
- Đã có tài khoản?{" "}
+ Đã có tài khoản?{""}
  <Link
  to="/shop/login"
  className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 font-bold"
@@ -266,7 +266,7 @@ type FieldProps = {
  placeholder?: string;
  type?: string;
  autoFocus?: boolean;
- inputMode?: "text" | "numeric" | "email";
+ inputMode?:"text" |"numeric" |"email";
  suffix?: React.ReactNode;
 };
 
@@ -276,7 +276,7 @@ function Field({
  value,
  onChange,
  placeholder,
- type = "text",
+ type ="text",
  autoFocus,
  inputMode,
  suffix,
@@ -297,7 +297,7 @@ function Field({
  placeholder={placeholder}
  autoFocus={autoFocus}
  inputMode={inputMode}
- className={`w-full h-11 pl-10 ${suffix ? "pr-12" : "pr-4"} border border-stone-300 dark:border-slate-700 focus:border-stone-900 dark:focus:border-stone-300 outline-none text-sm bg-white dark:bg-slate-800 text-stone-900 dark:text-stone-100 placeholder:text-stone-400 dark:placeholder:text-stone-500 transition-colors`}
+ className={`w-full h-11 pl-10 ${suffix ?"pr-12" :"pr-4"} border border-stone-300 dark:border-slate-700 focus:border-stone-900 dark:focus:border-stone-300 outline-none text-sm bg-white dark:bg-slate-800 text-stone-900 dark:text-stone-100 placeholder:text-stone-400 dark:placeholder:text-stone-500 transition-colors`}
  />
  {suffix && (
  <div className="absolute right-3 top-1/2 -translate-y-1/2">

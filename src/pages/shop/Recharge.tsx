@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setBalance } from "../../redux/slices/ShopSlice";
-import { walletApi } from "../../api/endpoints";
-import { ApiClientError } from "../../api/client";
-import { formatVnd, rechargeMethods } from "../../constants/ShopData";
+import { useState } from"react";
+import { useDispatch, useSelector } from"react-redux";
+import { setBalance } from"../../redux/slices/ShopSlice";
+import { walletApi } from"../../api/endpoints";
+import { ApiClientError } from"../../api/client";
+import { formatVnd, rechargeMethods } from"../../constants/ShopData";
 
 const quickAmounts = [50000, 100000, 200000, 500000, 1000000, 2000000];
 const codeFromId = (id: string) => id.toUpperCase();
@@ -26,7 +26,7 @@ export default function Recharge() {
  dispatch(setBalance(tx.balanceAfter));
  setMessage(`Nạp thành công ${formatVnd(tx.netAmount)} (đã bao gồm bonus ${formatVnd(tx.bonusAmount)}).`);
  } catch (e) {
- setError(e instanceof ApiClientError ? e.message : "Lỗi nạp tiền");
+ setError(e instanceof ApiClientError ? e.message :"Lỗi nạp tiền");
  } finally {
  setLoading(false);
  }
@@ -51,15 +51,15 @@ export default function Recharge() {
  onClick={() => setMethod(m.id)}
  className={`p-4 border-2 transition-all ${
  method === m.id
- ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-900/30"
- : "border-slate-200 dark:border-slate-700 hover:border-emerald-300"
+ ?"border-emerald-500 bg-emerald-50 dark:bg-emerald-900/30"
+ :"border-slate-200 dark:border-slate-700 hover:border-emerald-300"
  }`}
  >
  <div className="text-3xl mb-1">{m.icon}</div>
  <div className="text-xs font-bold text-slate-800 dark:text-slate-100">{m.label}</div>
  <div
  className={`text-xs mt-0.5 font-bold ${
- m.bonus.startsWith("-") ? "text-rose-500" : "text-emerald-600"
+ m.bonus.startsWith("-") ?"text-rose-500" :"text-emerald-600"
  }`}
  >
  {m.bonus}
@@ -79,8 +79,8 @@ export default function Recharge() {
  onClick={() => setAmount(a)}
  className={`py-3 font-bold text-sm transition-all ${
  amount === a
- ? "bg-emerald-500 text-white"
- : "bg-slate-100 dark:bg-slate-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 text-slate-700 dark:text-slate-200"
+ ?"bg-emerald-500 text-white"
+ :"bg-slate-100 dark:bg-slate-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 text-slate-700 dark:text-slate-200"
  }`}
  >
  {formatVnd(a)}
@@ -115,7 +115,7 @@ export default function Recharge() {
  <div className="bg-gradient-to-br from-emerald-500 to-cyan-600 text-white p-5 mb-4">
  <div className="text-sm text-emerald-50">Số dư hiện tại</div>
  <div className="text-3xl font-black mt-1">
- {isLoggedIn ? formatVnd(balance) : "0đ"}
+ {isLoggedIn ? formatVnd(balance) :"0đ"}
  </div>
  </div>
 
@@ -160,7 +160,7 @@ export default function Recharge() {
  disabled={!isLoggedIn || amount <= 0 || loading}
  className="w-full h-12 mt-4 bg-stone-900 hover:bg-stone-800 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold tracking-wide transition-colors"
  >
- {loading ? "Đang xử lý..." : isLoggedIn ? "Xác nhận nạp" : "Đăng nhập để nạp"}
+ {loading ?"Đang xử lý..." : isLoggedIn ?"Xác nhận nạp" :"Đăng nhập để nạp"}
  </button>
  </div>
  </aside>

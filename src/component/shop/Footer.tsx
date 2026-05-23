@@ -1,15 +1,15 @@
-import { Link } from "react-router-dom";
+import { Link } from"react-router-dom";
 
 export default function Footer() {
  return (
- <footer className="bg-stone-900 text-stone-400 mt-16 font-serif">
+ <footer className="bg-stone-900 text-stone-400 mt-16">
  <div className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-2 md:grid-cols-4 gap-8">
  <div>
  <div className="flex items-center gap-2 mb-4">
- <div className="w-10 h-10 border-2 border-stone-300 flex items-center justify-center font-serif font-bold text-stone-100">
+ <div className="w-10 h-10 border-2 border-stone-300 flex items-center justify-center font-bold text-stone-100">
  BM
  </div>
- <span className="font-serif text-lg font-bold text-stone-100">
+ <span className="text-lg font-bold text-stone-100">
  SHOP BM
  </span>
  </div>

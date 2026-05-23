@@ -1,39 +1,39 @@
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { formatVnd, products } from "../../constants/ShopData";
+import { useSelector } from"react-redux";
+import { Link } from"react-router-dom";
+import { formatVnd, products } from"../../constants/ShopData";
 
 const mockOrders = [
  {
- id: "#ORD-20260520-001",
- date: "2026-05-20 14:32",
- productId: "p1",
+ id:"#ORD-20260520-001",
+ date:"2026-05-20 14:32",
+ productId:"p1",
  qty: 2,
- status: "Đã giao",
- statusColor: "emerald",
+ status:"Đã giao",
+ statusColor:"emerald",
  },
  {
- id: "#ORD-20260518-014",
- date: "2026-05-18 09:15",
- productId: "p3",
+ id:"#ORD-20260518-014",
+ date:"2026-05-18 09:15",
+ productId:"p3",
  qty: 1,
- status: "Đã giao",
- statusColor: "emerald",
+ status:"Đã giao",
+ statusColor:"emerald",
  },
  {
- id: "#ORD-20260515-203",
- date: "2026-05-15 22:08",
- productId: "p6",
+ id:"#ORD-20260515-203",
+ date:"2026-05-15 22:08",
+ productId:"p6",
  qty: 5,
- status: "Đang xử lý",
- statusColor: "amber",
+ status:"Đang xử lý",
+ statusColor:"amber",
  },
  {
- id: "#ORD-20260510-188",
- date: "2026-05-10 11:42",
- productId: "p7",
+ id:"#ORD-20260510-188",
+ date:"2026-05-10 11:42",
+ productId:"p7",
  qty: 3,
- status: "Hoàn tiền",
- statusColor: "rose",
+ status:"Hoàn tiền",
+ statusColor:"rose",
  },
 ];
 
@@ -53,13 +53,13 @@ export default function History() {
  <div className="flex items-center justify-center gap-3">
  <Link
  to="/shop/login"
- className="px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold "
+ className="px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold"
  >
  🔓 Đăng nhập
  </Link>
  <Link
  to="/shop/register"
- className="px-6 py-3 bg-white border-2 border-emerald-500 text-emerald-600 hover:bg-emerald-50 font-bold "
+ className="px-6 py-3 bg-white border-2 border-emerald-500 text-emerald-600 hover:bg-emerald-50 font-bold"
  >
  Đăng ký
  </Link>
@@ -75,10 +75,10 @@ export default function History() {
  {/* Stats */}
  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
  {[
- { label: "Tổng đơn", value: "127", icon: "📦", color: "emerald" },
- { label: "Đã giao", value: "121", icon: "✅", color: "blue" },
- { label: "Đang xử lý", value: "4", icon: "⏳", color: "amber" },
- { label: "Hoàn tiền", value: "2", icon: "↩️", color: "rose" },
+ { label:"Tổng đơn", value:"127", icon:"📦", color:"emerald" },
+ { label:"Đã giao", value:"121", icon:"✅", color:"blue" },
+ { label:"Đang xử lý", value:"4", icon:"⏳", color:"amber" },
+ { label:"Hoàn tiền", value:"2", icon:"↩️", color:"rose" },
  ].map((s) => (
  <div
  key={s.label}

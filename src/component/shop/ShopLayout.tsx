@@ -1,27 +1,27 @@
-import { useEffect } from "react";
-import { Outlet, Link } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import TopBar from "./TopBar";
-import Header from "./Header";
-import NavBar from "./NavBar";
-import Footer from "./Footer";
-import SeasonalDecorations from "./SeasonalDecorations";
-import { fetchMeThunk, type Theme } from "../../redux/slices/ShopSlice";
-import type { AppDispatch } from "../../redux/Store";
-import { tokenStorage } from "../../api/client";
+import { useEffect } from"react";
+import { Outlet, Link } from"react-router-dom";
+import { useSelector, useDispatch } from"react-redux";
+import TopBar from"./TopBar";
+import Header from"./Header";
+import NavBar from"./NavBar";
+import Footer from"./Footer";
+import SeasonalDecorations from"./SeasonalDecorations";
+import { fetchMeThunk, type Theme } from"../../redux/slices/ShopSlice";
+import type { AppDispatch } from"../../redux/Store";
+import { tokenStorage } from"../../api/client";
 
 const themeClasses: Record<Theme, string> = {
- light: "",
- dark: "dark",
- tet: "theme-tet",
- christmas: "theme-christmas",
- halloween: "theme-halloween dark",
+ light:"",
+ dark:"dark",
+ tet:"theme-tet",
+ christmas:"theme-christmas",
+ halloween:"theme-halloween dark",
 };
 
-const fontScaleClass: Record<"sm" | "md" | "lg", string> = {
- sm: "text-[14px]",
- md: "",
- lg: "text-[17px]",
+const fontScaleClass: Record<"sm" |"md" |"lg", string> = {
+ sm:"text-[14px]",
+ md:"",
+ lg:"text-[17px]",
 };
 
 export default function ShopLayout() {
@@ -29,7 +29,7 @@ export default function ShopLayout() {
  const theme = useSelector((s: any) => s.shop.theme as Theme);
  const compactMode = useSelector((s: any) => s.shop.compactMode as boolean);
  const fontScale = useSelector(
- (s: any) => s.shop.fontScale as "sm" | "md" | "lg"
+ (s: any) => s.shop.fontScale as"sm" |"md" |"lg"
  );
 
  // Restore session khi có token (F5)
@@ -41,20 +41,20 @@ export default function ShopLayout() {
  const root = document.documentElement;
  // Strip all theme classes first
  root.classList.remove(
- "dark",
- "theme-tet",
- "theme-christmas",
- "theme-halloween"
+"dark",
+"theme-tet",
+"theme-christmas",
+"theme-halloween"
  );
  const cls = themeClasses[theme];
  if (cls) {
- cls.split(" ").forEach((c) => root.classList.add(c));
+ cls.split("").forEach((c) => root.classList.add(c));
  }
  }, [theme]);
 
  return (
  <div
- className={`shop-root min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col ${fontScaleClass[fontScale]} ${compactMode ? "leading-tight" : ""}`}
+ className={`shop-root min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col ${fontScaleClass[fontScale]} ${compactMode ?"leading-tight" :""}`}
  >
  <SeasonalDecorations />
  <TopBar />

@@ -1,7 +1,7 @@
-import { Link } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { Search, ShoppingBag, Bell, CreditCard } from "lucide-react";
-import { setSearch } from "../../redux/slices/ShopSlice";
+import { Link } from"react-router-dom";
+import { useSelector, useDispatch } from"react-redux";
+import { Search, ShoppingBag, Bell, CreditCard } from"lucide-react";
+import { setSearch } from"../../redux/slices/ShopSlice";
 
 export default function Header() {
  const dispatch = useDispatch();
@@ -14,11 +14,11 @@ export default function Header() {
  <div className="flex items-center gap-3 md:gap-6">
  {/* Logo */}
  <Link to="/shop" className="flex items-center gap-2 shrink-0">
- <div className="w-9 h-9 md:w-10 md:h-10 border-2 border-stone-900 dark:border-stone-100 flex items-center justify-center text-stone-900 dark:text-stone-100 font-serif font-black text-sm md:text-base">
+ <div className="w-9 h-9 md:w-10 md:h-10 border-2 border-stone-900 dark:border-stone-100 flex items-center justify-center text-stone-900 dark:text-stone-100 font-black text-sm md:text-base">
  BM
  </div>
  <div>
- <div className="font-serif text-base md:text-xl font-bold text-stone-900 dark:text-stone-100 leading-tight whitespace-nowrap">
+ <div className="text-base md:text-xl font-bold text-stone-900 dark:text-stone-100 leading-tight whitespace-nowrap">
  SHOP BM
  </div>
  <div className="hidden md:block text-[10px] tracking-[0.2em] uppercase text-stone-500 dark:text-stone-400 leading-tight">
@@ -57,7 +57,7 @@ export default function Header() {
 
  <button className="relative p-2 md:p-2.5 hover:bg-stone-100 dark:hover:bg-slate-800 text-stone-700 dark:text-stone-200 transition-colors">
  <Bell size={18} />
- <span className="absolute top-1.5 right-1.5 md:top-2 md:right-2 w-1.5 h-1.5 bg-rose-600 "></span>
+ <span className="absolute top-1.5 right-1.5 md:top-2 md:right-2 w-1.5 h-1.5 bg-rose-600"></span>
  </button>
  </div>
  </div>
@@ -86,7 +86,7 @@ function SearchInput({
  onChange={(e) => onChange(e.target.value)}
  placeholder="Tìm BM, Via, Fanpage..."
  className={`w-full h-10 md:h-11 pl-10 md:pl-11 ${
- showButton ? "pr-24" : "pr-4"
+ showButton ?"pr-24" :"pr-4"
  } border border-stone-300 dark:border-slate-700 focus:border-stone-900 dark:focus:border-stone-300 outline-none text-sm bg-white dark:bg-slate-800 text-stone-900 dark:text-stone-100 placeholder:text-stone-400 dark:placeholder:text-stone-500 transition-colors`}
  />
  <Search

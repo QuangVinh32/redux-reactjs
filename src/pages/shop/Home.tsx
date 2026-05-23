@@ -1,8 +1,8 @@
-import { Link } from "react-router-dom";
-import { useApi } from "../../hooks/useApi";
-import { catalogApi } from "../../api/endpoints";
-import ProductCard from "../../component/shop/ProductCard";
-import type { ApiProduct } from "../../api/types";
+import { Link } from"react-router-dom";
+import { useApi } from"../../hooks/useApi";
+import { catalogApi } from"../../api/endpoints";
+import ProductCard from"../../component/shop/ProductCard";
+import type { ApiProduct } from"../../api/types";
 
 const toCard = (p: ApiProduct) => ({
  id: String(p.id),
@@ -12,8 +12,8 @@ const toCard = (p: ApiProduct) => ({
  oldPrice: p.oldPrice,
  stock: p.stock,
  badge: p.badge,
- description: p.shortDescription ?? "",
- image: p.imageUrl ?? "",
+ description: p.shortDescription ??"",
+ image: p.imageUrl ??"",
 });
 
 export default function Home() {
@@ -22,13 +22,13 @@ export default function Home() {
  const latest = useApi(() => catalogApi.latest(), []);
 
  return (
- <div className="font-serif">
+ <div className="">
  <section className="bg-stone-50 dark:bg-slate-900 border-b border-stone-200 dark:border-slate-800">
  <div className="max-w-7xl mx-auto px-4 py-16 md:py-20 text-center">
  <div className="inline-block text-xs tracking-[0.3em] uppercase text-stone-500 dark:text-stone-400 mb-4">
  Est. 2024 · Shop BM
  </div>
- <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-stone-900 dark:text-stone-100 leading-tight tracking-tight">
+ <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-stone-900 dark:text-stone-100 leading-tight tracking-tight">
  Tài khoản BM Facebook<br/>
  <span className="italic text-stone-600 dark:text-stone-300">— uy tín, bảo hành dài hạn</span>
  </h1>
@@ -50,13 +50,13 @@ export default function Home() {
  <section className="bg-white dark:bg-slate-900 border-b border-stone-200 dark:border-slate-800">
  <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
  {[
- { value: "15.000+", label: "Đơn hàng" },
- { value: "99%", label: "Hài lòng" },
- { value: "24/7", label: "Hỗ trợ" },
- { value: "5 năm", label: "Kinh nghiệm" },
+ { value:"15.000+", label:"Đơn hàng" },
+ { value:"99%", label:"Hài lòng" },
+ { value:"24/7", label:"Hỗ trợ" },
+ { value:"5 năm", label:"Kinh nghiệm" },
  ].map((s) => (
  <div key={s.label}>
- <div className="font-serif text-3xl font-bold text-stone-900 dark:text-stone-100">{s.value}</div>
+ <div className="text-3xl font-bold text-stone-900 dark:text-stone-100">{s.value}</div>
  <div className="text-xs uppercase tracking-widest text-stone-500 dark:text-stone-400 mt-1">{s.label}</div>
  </div>
  ))}
@@ -68,7 +68,7 @@ export default function Home() {
  <div className="text-xs uppercase tracking-[0.4em] text-stone-500 dark:text-stone-400 mb-3">
  — Mục lục —
  </div>
- <h2 className="font-serif text-3xl md:text-4xl font-bold text-stone-900 dark:text-stone-100">
+ <h2 className="text-3xl md:text-4xl font-bold text-stone-900 dark:text-stone-100">
  Danh Mục Sản Phẩm
  </h2>
  <div className="w-12 h-px bg-stone-900 dark:bg-stone-100 mx-auto mt-4" />
@@ -85,11 +85,11 @@ export default function Home() {
  className="group block py-6 border-t border-stone-300 dark:border-slate-700 hover:border-stone-900 dark:hover:border-stone-100 transition-colors"
  >
  <div className="flex items-baseline gap-4">
- <span className="font-serif italic text-2xl text-stone-400 dark:text-stone-500 w-10 shrink-0">
+ <span className="italic text-2xl text-stone-400 dark:text-stone-500 w-10 shrink-0">
  {romanize(idx + 1)}.
  </span>
  <div className="flex-1 min-w-0">
- <div className="font-serif text-xl md:text-2xl font-semibold text-stone-900 dark:text-stone-100 group-hover:underline underline-offset-4 decoration-1">
+ <div className="text-xl md:text-2xl font-semibold text-stone-900 dark:text-stone-100 group-hover:underline underline-offset-4 decoration-1">
  {cat.name}
  </div>
  {cat.description && (
@@ -146,7 +146,7 @@ export default function Home() {
  <div className="border border-stone-300 dark:border-slate-700 p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-6">
  <div>
  <div className="text-xs uppercase tracking-[0.3em] text-stone-500 dark:text-stone-400 mb-2">Affiliate</div>
- <h3 className="font-serif text-2xl md:text-3xl font-bold text-stone-900 dark:text-stone-100">
+ <h3 className="text-2xl md:text-3xl font-bold text-stone-900 dark:text-stone-100">
  Giới thiệu — Hoa hồng 15%
  </h3>
  <p className="text-stone-600 dark:text-stone-400 text-sm mt-1">
@@ -164,9 +164,9 @@ export default function Home() {
 
 function romanize(n: number): string {
  const map: [number, string][] = [
- [10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"],
+ [10,"X"], [9,"IX"], [5,"V"], [4,"IV"], [1,"I"],
  ];
- let res = "";
+ let res ="";
  for (const [val, sym] of map) {
  while (n >= val) { res += sym; n -= val; }
  }
@@ -175,8 +175,8 @@ function romanize(n: number): string {
 
 function SectionHeading({ title, subtitle, noMargin }: { title: string; subtitle?: string; noMargin?: boolean }) {
  return (
- <div className={noMargin ? "" : "mb-6"}>
- <h2 className="font-serif text-2xl md:text-3xl font-bold text-stone-900 dark:text-stone-100">{title}</h2>
+ <div className={noMargin ?"" :"mb-6"}>
+ <h2 className="text-2xl md:text-3xl font-bold text-stone-900 dark:text-stone-100">{title}</h2>
  {subtitle && <div className="text-xs uppercase tracking-widest text-stone-500 dark:text-stone-400 mt-1">{subtitle}</div>}
  </div>
  );

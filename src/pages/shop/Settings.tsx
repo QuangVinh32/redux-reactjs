@@ -1,5 +1,5 @@
-import { useEffect, useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useEffect, useRef } from"react";
+import { useSelector, useDispatch } from"react-redux";
 import {
  setTheme,
  setCompactMode,
@@ -12,9 +12,9 @@ import {
  resetSettings,
  syncSettingsThunk,
  type Theme,
-} from "../../redux/slices/ShopSlice";
-import type { AppDispatch } from "../../redux/Store";
-import { tokenStorage } from "../../api/client";
+} from"../../redux/slices/ShopSlice";
+import type { AppDispatch } from"../../redux/Store";
+import { tokenStorage } from"../../api/client";
 
 const themeOptions: {
  value: Theme;
@@ -24,39 +24,39 @@ const themeOptions: {
  desc: string;
 }[] = [
  {
- value: "light",
- label: "Sáng",
- icon: "☀️",
- preview: "bg-gradient-to-br from-slate-50 to-white border-slate-300",
- desc: "Giao diện sáng mặc định",
+ value:"light",
+ label:"Sáng",
+ icon:"☀️",
+ preview:"bg-gradient-to-br from-slate-50 to-white border-slate-300",
+ desc:"Giao diện sáng mặc định",
  },
  {
- value: "dark",
- label: "Tối",
- icon: "🌙",
- preview: "bg-gradient-to-br from-slate-800 to-slate-950 border-slate-700",
- desc: "Giao diện tối, dễ nhìn buổi đêm",
+ value:"dark",
+ label:"Tối",
+ icon:"🌙",
+ preview:"bg-gradient-to-br from-slate-800 to-slate-950 border-slate-700",
+ desc:"Giao diện tối, dễ nhìn buổi đêm",
  },
  {
- value: "tet",
- label: "Tết",
- icon: "🧧",
- preview: "bg-gradient-to-br from-red-600 via-rose-600 to-amber-500 border-red-400",
- desc: "Đỏ + vàng, lì xì + hoa mai",
+ value:"tet",
+ label:"Tết",
+ icon:"🧧",
+ preview:"bg-gradient-to-br from-red-600 via-rose-600 to-amber-500 border-red-400",
+ desc:"Đỏ + vàng, lì xì + hoa mai",
  },
  {
- value: "christmas",
- label: "Giáng Sinh",
- icon: "🎄",
- preview: "bg-gradient-to-br from-red-700 via-emerald-700 to-red-600 border-emerald-500",
- desc: "Đỏ + xanh + tuyết rơi",
+ value:"christmas",
+ label:"Giáng Sinh",
+ icon:"🎄",
+ preview:"bg-gradient-to-br from-red-700 via-emerald-700 to-red-600 border-emerald-500",
+ desc:"Đỏ + xanh + tuyết rơi",
  },
  {
- value: "halloween",
- label: "Halloween",
- icon: "🎃",
- preview: "bg-gradient-to-br from-orange-600 via-purple-900 to-black border-orange-500",
- desc: "Cam + tím + bí ngô, ma quái",
+ value:"halloween",
+ label:"Halloween",
+ icon:"🎃",
+ preview:"bg-gradient-to-br from-orange-600 via-purple-900 to-black border-orange-500",
+ desc:"Cam + tím + bí ngô, ma quái",
  },
 ];
 
@@ -101,8 +101,8 @@ export default function Settings() {
  onClick={() => dispatch(setTheme(opt.value))}
  className={`group relative border-2 p-3 text-left transition-all ${
  s.theme === opt.value
- ? "border-emerald-500 ring-2 ring-emerald-200 dark:ring-emerald-900"
- : "border-slate-200 dark:border-slate-700 hover:border-emerald-300"
+ ?"border-emerald-500 ring-2 ring-emerald-200 dark:ring-emerald-900"
+ :"border-slate-200 dark:border-slate-700 hover:border-emerald-300"
  }`}
  >
  <div className={`h-16 border ${opt.preview} mb-2 flex items-center justify-center text-3xl shadow-inner`}>
@@ -143,22 +143,22 @@ export default function Settings() {
  Cỡ chữ
  </div>
  <div className="flex gap-2">
- {(["sm", "md", "lg"] as const).map((size) => (
+ {(["sm","md","lg"] as const).map((size) => (
  <button
  key={size}
  onClick={() => dispatch(setFontScale(size))}
  className={`flex-1 py-3 border-2 font-bold transition-colors ${
  s.fontScale === size
- ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300"
- : "border-slate-200 dark:border-slate-700 hover:border-emerald-300 text-slate-700 dark:text-slate-200"
+ ?"border-emerald-500 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300"
+ :"border-slate-200 dark:border-slate-700 hover:border-emerald-300 text-slate-700 dark:text-slate-200"
  }`}
  >
  <div
  className={
- size === "sm" ? "text-xs" : size === "lg" ? "text-base" : "text-sm"
+ size ==="sm" ?"text-xs" : size ==="lg" ?"text-base" :"text-sm"
  }
  >
- {size === "sm" ? "Nhỏ" : size === "md" ? "Vừa" : "Lớn"}
+ {size ==="sm" ?"Nhỏ" : size ==="md" ?"Vừa" :"Lớn"}
  </div>
  </button>
  ))}
@@ -185,9 +185,9 @@ export default function Settings() {
  <button
  onClick={() => dispatch(setLanguage("vi"))}
  className={`flex-1 h-11 border-2 font-semibold ${
- s.language === "vi"
- ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300"
- : "border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200"
+ s.language ==="vi"
+ ?"border-emerald-500 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300"
+ :"border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200"
  }`}
  >
  🇻🇳 Tiếng Việt
@@ -195,9 +195,9 @@ export default function Settings() {
  <button
  onClick={() => dispatch(setLanguage("en"))}
  className={`flex-1 h-11 border-2 font-semibold ${
- s.language === "en"
- ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300"
- : "border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200"
+ s.language ==="en"
+ ?"border-emerald-500 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300"
+ :"border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200"
  }`}
  >
  🇬🇧 English
@@ -213,9 +213,9 @@ export default function Settings() {
  <button
  onClick={() => dispatch(setCurrency("VND"))}
  className={`flex-1 h-11 border-2 font-semibold ${
- s.currency === "VND"
- ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300"
- : "border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200"
+ s.currency ==="VND"
+ ?"border-emerald-500 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300"
+ :"border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200"
  }`}
  >
  VND
@@ -223,9 +223,9 @@ export default function Settings() {
  <button
  onClick={() => dispatch(setCurrency("USD"))}
  className={`flex-1 h-11 border-2 font-semibold ${
- s.currency === "USD"
- ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300"
- : "border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200"
+ s.currency ==="USD"
+ ?"border-emerald-500 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300"
+ :"border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200"
  }`}
  >
  USD
@@ -328,12 +328,12 @@ function Toggle({
  type="button"
  onClick={() => onChange(!checked)}
  className={`relative w-11 h-6 transition-colors shrink-0 ${
- checked ? "bg-emerald-500" : "bg-slate-300 dark:bg-slate-700"
+ checked ?"bg-emerald-500" :"bg-slate-300 dark:bg-slate-700"
  }`}
  >
  <span
  className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white shadow transition-transform ${
- checked ? "translate-x-5" : "translate-x-0"
+ checked ?"translate-x-5" :"translate-x-0"
  }`}
  />
  </button>

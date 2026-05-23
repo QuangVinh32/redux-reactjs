@@ -1,24 +1,24 @@
-import { useMemo } from "react";
-import { useSelector } from "react-redux";
-import type { Theme } from "../../redux/slices/ShopSlice";
+import { useMemo } from"react";
+import { useSelector } from"react-redux";
+import type { Theme } from"../../redux/slices/ShopSlice";
 
 const config: Record<Theme, { emojis: string[]; banner: string | null; bannerBg: string }> = {
- light: { emojis: [], banner: null, bannerBg: "" },
- dark: { emojis: [], banner: null, bannerBg: "" },
+ light: { emojis: [], banner: null, bannerBg:"" },
+ dark: { emojis: [], banner: null, bannerBg:"" },
  tet: {
- emojis: ["🧧", "🏮", "🎆", "🌸", "🐉", "✨"],
- banner: "🧧 Chúc Mừng Năm Mới – Lì xì 88K cho đơn đầu năm! 🏮",
- bannerBg: "bg-gradient-to-r from-rose-600 via-red-600 to-amber-500",
+ emojis: ["🧧","🏮","🎆","🌸","🐉","✨"],
+ banner:"🧧 Chúc Mừng Năm Mới – Lì xì 88K cho đơn đầu năm! 🏮",
+ bannerBg:"bg-gradient-to-r from-rose-600 via-red-600 to-amber-500",
  },
  christmas: {
- emojis: ["❄️", "🎄", "⛄", "🎅", "🎁", "✨"],
- banner: "🎄 Merry Christmas – Giảm 25% toàn shop dịp lễ! 🎁",
- bannerBg: "bg-gradient-to-r from-red-700 via-green-700 to-red-700",
+ emojis: ["❄️","🎄","⛄","🎅","🎁","✨"],
+ banner:"🎄 Merry Christmas – Giảm 25% toàn shop dịp lễ! 🎁",
+ bannerBg:"bg-gradient-to-r from-red-700 via-green-700 to-red-700",
  },
  halloween: {
- emojis: ["🎃", "👻", "🦇", "🕷️", "🕸️", "💀"],
- banner: "🎃 Trick or Treat – Giảm 31% mã HALLO31! 👻",
- bannerBg: "bg-gradient-to-r from-orange-600 via-purple-800 to-orange-600",
+ emojis: ["🎃","👻","🦇","🕷️","🕸️","💀"],
+ banner:"🎃 Trick or Treat – Giảm 31% mã HALLO31! 👻",
+ bannerBg:"bg-gradient-to-r from-orange-600 via-purple-800 to-orange-600",
  },
 };
 
@@ -40,7 +40,7 @@ export default function SeasonalDecorations() {
  }, [theme, enabled]);
 
  const cfg = config[theme];
- if (!enabled || theme === "light" || theme === "dark") return null;
+ if (!enabled || theme ==="light" || theme ==="dark") return null;
 
  return (
  <>

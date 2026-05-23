@@ -14,19 +14,19 @@ export default function Affiliate() {
  <div className="grid md:grid-cols-3 gap-5 mb-8">
  {[
  {
- icon: "🔗",
- title: "Lấy link affiliate",
- desc: "Mỗi user có link riêng để chia sẻ",
+ icon:"🔗",
+ title:"Lấy link affiliate",
+ desc:"Mỗi user có link riêng để chia sẻ",
  },
  {
- icon: "👥",
- title: "Chia sẻ bạn bè",
- desc: "Đăng Facebook, Telegram, Zalo...",
+ icon:"👥",
+ title:"Chia sẻ bạn bè",
+ desc:"Đăng Facebook, Telegram, Zalo...",
  },
  {
- icon: "💵",
- title: "Nhận hoa hồng",
- desc: "Tự động cộng vào ví, rút bất kỳ lúc nào",
+ icon:"💵",
+ title:"Nhận hoa hồng",
+ desc:"Tự động cộng vào ví, rút bất kỳ lúc nào",
  },
  ].map((step, i) => (
  <div
@@ -60,9 +60,9 @@ export default function Affiliate() {
  </div>
  <div className="mt-4 grid grid-cols-3 gap-3">
  {[
- { label: "Tổng clicks", value: "1,284", color: "blue" },
- { label: "Đăng ký", value: "47", color: "emerald" },
- { label: "Hoa hồng", value: "1.2tr", color: "amber" },
+ { label:"Tổng clicks", value:"1,284", color:"blue" },
+ { label:"Đăng ký", value:"47", color:"emerald" },
+ { label:"Hoa hồng", value:"1.2tr", color:"amber" },
  ].map((s) => (
  <div key={s.label} className="bg-slate-50 dark:bg-slate-800 p-3 text-center">
  <div className={`text-xl font-black text-${s.color}-600 dark:text-${s.color}-400`}>
@@ -78,10 +78,10 @@ export default function Affiliate() {
  <h2 className="font-black mb-4">📊 Cấp bậc Affiliate</h2>
  <div className="space-y-3">
  {[
- { level: "Bronze", rate: "5%", req: "0 – 5 triệu", color: "amber" },
- { level: "Silver", rate: "8%", req: "5 – 20 triệu", color: "slate" },
- { level: "Gold", rate: "12%", req: "20 – 50 triệu", color: "yellow" },
- { level: "Diamond", rate: "15%", req: "Trên 50 triệu", color: "cyan" },
+ { level:"Bronze", rate:"5%", req:"0 – 5 triệu", color:"amber" },
+ { level:"Silver", rate:"8%", req:"5 – 20 triệu", color:"slate" },
+ { level:"Gold", rate:"12%", req:"20 – 50 triệu", color:"yellow" },
+ { level:"Diamond", rate:"15%", req:"Trên 50 triệu", color:"cyan" },
  ].map((tier) => (
  <div
  key={tier.level}

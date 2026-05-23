@@ -1,7 +1,7 @@
-import { Link, useLocation } from "react-router-dom";
-import { useState } from "react";
-import { Menu, X, ChevronDown } from "lucide-react";
-import { mainNav, subNav } from "../../constants/ShopData";
+import { Link, useLocation } from"react-router-dom";
+import { useState } from"react";
+import { Menu, X, ChevronDown } from"lucide-react";
+import { mainNav, subNav } from"../../constants/ShopData";
 
 export default function NavBar() {
  const location = useLocation();
@@ -10,7 +10,7 @@ export default function NavBar() {
 
  const isActive = (path: string) => {
  const base = path.split("?")[0];
- if (base === "/shop") return location.pathname === "/shop";
+ if (base ==="/shop") return location.pathname ==="/shop";
  return location.pathname.startsWith(base);
  };
 
@@ -27,7 +27,7 @@ export default function NavBar() {
  {mobileOpen ? <X size={16} /> : <Menu size={16} />}
  <span className="text-sm font-semibold uppercase tracking-wider">Menu</span>
  </button>
- <Link to="/shop" className="text-sm font-serif font-bold text-stone-900 dark:text-stone-100">
+ <Link to="/shop" className="text-sm font-bold text-stone-900 dark:text-stone-100">
  Trang Chủ
  </Link>
  <Link to="/shop/recharge" className="px-3 py-1.5 bg-stone-900 text-white text-xs font-semibold uppercase tracking-wider">
@@ -45,8 +45,8 @@ export default function NavBar() {
  onClick={closeMobile}
  className={`block px-3 py-2.5 text-sm font-semibold uppercase tracking-wider transition-colors ${
  isActive(item.path)
- ? "bg-stone-100 dark:bg-slate-800 text-stone-900 dark:text-stone-100"
- : "text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-slate-800"
+ ?"bg-stone-100 dark:bg-slate-800 text-stone-900 dark:text-stone-100"
+ :"text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-slate-800"
  }`}
  >
  {item.label}
@@ -101,8 +101,8 @@ export default function NavBar() {
  to={item.path}
  className={`flex items-center gap-1 px-3 xl:px-4 py-3.5 text-xs font-semibold uppercase tracking-wider whitespace-nowrap transition-colors ${
  isActive(item.path)
- ? "text-stone-900 dark:text-stone-100 border-b-2 border-stone-900 dark:border-stone-100"
- : "text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
+ ?"text-stone-900 dark:text-stone-100 border-b-2 border-stone-900 dark:border-stone-100"
+ :"text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
  }`}
  >
  {item.label}
