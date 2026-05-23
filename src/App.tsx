@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 
 import {
   increment,
@@ -36,6 +37,12 @@ function App() {
         >
           → Counter
         </button>
+        <Link
+          to="/shop"
+          className="fixed bottom-24 right-4 z-50 px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-semibold rounded-md shadow-lg"
+        >
+          → Shop BM
+        </Link>
       </div>
     );
   }
@@ -72,6 +79,12 @@ function CounterView({ onSwitch }: { onSwitch: () => void }) {
       >
         → Dashboard
       </button>
+      <Link
+        to="/shop"
+        className="fixed top-14 right-4 z-50 px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-semibold rounded-md shadow-lg"
+      >
+        → Shop BM
+      </Link>
 
       <div
         className="w-full max-w-2xl bg-white/70 backdrop-blur-sm rounded-[44px] p-7"
