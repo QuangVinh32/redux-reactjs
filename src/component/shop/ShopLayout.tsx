@@ -1,12 +1,14 @@
 import { useEffect } from "react";
 import { Outlet, Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import TopBar from "./TopBar";
 import Header from "./Header";
 import NavBar from "./NavBar";
 import Footer from "./Footer";
 import SeasonalDecorations from "./SeasonalDecorations";
-import type { Theme } from "../../redux/slices/ShopSlice";
+import { fetchMeThunk, type Theme } from "../../redux/slices/ShopSlice";
+import type { AppDispatch } from "../../redux/Store";
+import { tokenStorage } from "../../api/client";
 
 const themeClasses: Record<Theme, string> = {
   light: "",
@@ -23,11 +25,17 @@ const fontScaleClass: Record<"sm" | "md" | "lg", string> = {
 };
 
 export default function ShopLayout() {
+  const dispatch = useDispatch<AppDispatch>();
   const theme = useSelector((s: any) => s.shop.theme as Theme);
   const compactMode = useSelector((s: any) => s.shop.compactMode as boolean);
   const fontScale = useSelector(
     (s: any) => s.shop.fontScale as "sm" | "md" | "lg"
   );
+
+  // Restore session khi có token (F5)
+  useEffect(() => {
+    if (tokenStorage.getAccess()) dispatch(fetchMeThunk());
+  }, [dispatch]);
 
   useEffect(() => {
     const root = document.documentElement;

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { login } from "../../redux/slices/ShopSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { registerThunk } from "../../redux/slices/ShopSlice";
+import type { AppDispatch } from "../../redux/Store";
 
 type Form = {
   username: string;
@@ -24,8 +25,10 @@ const empty: Form = {
 };
 
 export default function Register() {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const authLoading = useSelector((s: any) => s.shop.authLoading as boolean);
+  const authError = useSelector((s: any) => s.shop.authError as string);
   const [form, setForm] = useState<Form>(empty);
   const [showPwd, setShowPwd] = useState(false);
   const [error, setError] = useState("");
@@ -54,7 +57,7 @@ export default function Register() {
     "bg-emerald-600",
   ];
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (
       !form.username.trim() ||
@@ -87,28 +90,35 @@ export default function Register() {
       return;
     }
     setError("");
-    dispatch(login({ username: form.username.trim(), balance: 50000 }));
+    const res = await dispatch(registerThunk({
+      username: form.username.trim(),
+      email: form.email.trim(),
+      phone: form.phone.trim(),
+      password: form.password,
+      refCode: form.refCode.trim() || undefined,
+    }));
+    if (!registerThunk.fulfilled.match(res)) return;
     navigate("/shop");
   };
 
   return (
     <div className="max-w-lg mx-auto px-4 py-8 md:py-12">
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 border border-stone-300 dark:border-slate-800 overflow-hidden font-serif">
         {/* Header */}
-        <div className="bg-gradient-to-br from-amber-400 via-orange-500 to-rose-500 px-6 py-8 text-center text-white">
-          <div className="w-16 h-16 mx-auto rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center text-3xl font-black mb-3 shadow-lg">
+        <div className="bg-stone-900 dark:bg-stone-100 px-6 py-8 text-center text-white dark:text-stone-900 border-b border-stone-200 dark:border-slate-800">
+          <div className="w-14 h-14 mx-auto border-2 border-white dark:border-stone-900 flex items-center justify-center font-serif text-xl font-bold mb-3">
             BM
           </div>
-          <h1 className="text-2xl font-black">Đăng Ký Tài Khoản</h1>
-          <p className="text-amber-50 text-sm mt-1">
-            Tặng <b>50.000đ</b> cho thành viên mới
+          <h1 className="font-serif text-2xl font-bold tracking-wide">Đăng Ký Tài Khoản</h1>
+          <p className="text-stone-300 dark:text-stone-700 text-xs mt-2 uppercase tracking-[0.2em]">
+            Tặng 50.000đ cho thành viên mới
           </p>
         </div>
 
         <form onSubmit={onSubmit} className="p-6 space-y-4">
-          {error && (
+          {(error || authError) && (
             <div className="bg-rose-50 border border-rose-200 text-rose-700 text-sm px-3 py-2 rounded-lg">
-              ⚠️ {error}
+              {error || authError}
             </div>
           )}
 
@@ -226,9 +236,10 @@ export default function Register() {
           {/* Submit */}
           <button
             type="submit"
-            className="w-full h-12 rounded-lg bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 hover:opacity-90 text-white font-bold transition-opacity shadow-lg shadow-amber-200"
+            disabled={authLoading}
+            className="w-full h-12 rounded-lg bg-slate-900 hover:bg-slate-800 disabled:opacity-60 text-white font-semibold tracking-wide transition-colors"
           >
-            🎉 Đăng Ký Ngay
+            {authLoading ? "Đang xử lý..." : "Đăng ký"}
           </button>
 
           <div className="text-center text-sm text-slate-600 dark:text-slate-400 pt-2">

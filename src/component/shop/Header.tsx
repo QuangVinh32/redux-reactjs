@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { Search, ShoppingBag, Bell, CreditCard } from "lucide-react";
 import { setSearch } from "../../redux/slices/ShopSlice";
 
 export default function Header() {
@@ -8,26 +9,25 @@ export default function Header() {
   const cartCount = cart.reduce((sum: number, c: any) => sum + c.qty, 0);
 
   return (
-    <header className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm">
+    <header className="bg-white dark:bg-slate-900 border-b border-stone-200 dark:border-slate-800">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 py-3 md:py-4">
-        {/* Row 1: Logo + search (md+) + actions */}
         <div className="flex items-center gap-3 md:gap-6">
           {/* Logo */}
           <Link to="/shop" className="flex items-center gap-2 shrink-0">
-            <div className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center text-white font-black text-base md:text-lg shadow-md">
+            <div className="w-9 h-9 md:w-10 md:h-10 border-2 border-stone-900 dark:border-stone-100 flex items-center justify-center text-stone-900 dark:text-stone-100 font-serif font-black text-sm md:text-base">
               BM
             </div>
             <div>
-              <div className="text-base md:text-xl font-black text-slate-900 dark:text-white leading-tight whitespace-nowrap">
-                SHOP <span className="text-emerald-600 dark:text-emerald-400">BM</span>
+              <div className="font-serif text-base md:text-xl font-bold text-stone-900 dark:text-stone-100 leading-tight whitespace-nowrap">
+                SHOP BM
               </div>
-              <div className="hidden md:block text-[10px] text-slate-500 dark:text-slate-400 leading-tight">
-                Giá Rẻ – Uy Tín – 24/7
+              <div className="hidden md:block text-[10px] tracking-[0.2em] uppercase text-stone-500 dark:text-stone-400 leading-tight">
+                Est. 2024
               </div>
             </div>
           </Link>
 
-          {/* Search - desktop (md+) inline */}
+          {/* Search md+ */}
           <div className="hidden md:block flex-1 max-w-2xl">
             <SearchInput
               value={searchQuery}
@@ -40,28 +40,29 @@ export default function Header() {
           <div className="flex items-center gap-1 md:gap-2 ml-auto">
             <Link
               to="/shop/recharge"
-              className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-700 text-sm font-semibold transition-colors whitespace-nowrap"
+              className="hidden md:flex items-center gap-2 px-4 py-2 border border-stone-300 dark:border-slate-700 hover:border-stone-900 dark:hover:border-stone-300 text-stone-700 dark:text-stone-200 text-sm font-semibold transition-colors whitespace-nowrap"
             >
-              💳 Nạp tiền
+              <CreditCard size={14} />
+              Nạp tiền
             </Link>
 
-            <button className="relative p-2 md:p-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-colors">
-              <span className="text-lg md:text-xl">🛒</span>
+            <button className="relative p-2 md:p-2.5 hover:bg-stone-100 dark:hover:bg-slate-800 text-stone-700 dark:text-stone-200 transition-colors">
+              <ShoppingBag size={18} />
               {cartCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 md:-top-1 md:-right-1 min-w-[18px] h-[18px] px-1 bg-rose-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 text-[10px] font-bold flex items-center justify-center">
                   {cartCount}
                 </span>
               )}
             </button>
 
-            <button className="relative p-2 md:p-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-colors">
-              <span className="text-lg md:text-xl">🔔</span>
-              <span className="absolute top-1.5 right-1.5 md:top-2 md:right-2 w-2 h-2 bg-rose-500 rounded-full"></span>
+            <button className="relative p-2 md:p-2.5 hover:bg-stone-100 dark:hover:bg-slate-800 text-stone-700 dark:text-stone-200 transition-colors">
+              <Bell size={18} />
+              <span className="absolute top-1.5 right-1.5 md:top-2 md:right-2 w-1.5 h-1.5 bg-rose-600 rounded-full"></span>
             </button>
           </div>
         </div>
 
-        {/* Row 2: Search - mobile only */}
+        {/* Mobile search */}
         <div className="md:hidden mt-3">
           <SearchInput
             value={searchQuery}
@@ -75,14 +76,8 @@ export default function Header() {
 }
 
 function SearchInput({
-  value,
-  onChange,
-  showButton,
-}: {
-  value: string;
-  onChange: (v: string) => void;
-  showButton: boolean;
-}) {
+  value, onChange, showButton,
+}: { value: string; onChange: (v: string) => void; showButton: boolean }) {
   return (
     <div className="relative">
       <input
@@ -91,15 +86,16 @@ function SearchInput({
         onChange={(e) => onChange(e.target.value)}
         placeholder="Tìm BM, Via, Fanpage..."
         className={`w-full h-10 md:h-11 pl-10 md:pl-11 ${
-          showButton ? "pr-32" : "pr-4"
-        } rounded-full border-2 border-emerald-100 dark:border-slate-700 focus:border-emerald-400 dark:focus:border-emerald-500 outline-none text-sm bg-slate-50 dark:bg-slate-800 focus:bg-white dark:focus:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-colors`}
+          showButton ? "pr-24" : "pr-4"
+        } border border-stone-300 dark:border-slate-700 focus:border-stone-900 dark:focus:border-stone-300 outline-none text-sm bg-white dark:bg-slate-800 text-stone-900 dark:text-stone-100 placeholder:text-stone-400 dark:placeholder:text-stone-500 transition-colors`}
       />
-      <span className="absolute left-3.5 md:left-4 top-1/2 -translate-y-1/2 text-slate-400">
-        🔍
-      </span>
+      <Search
+        size={16}
+        className="absolute left-3.5 md:left-4 top-1/2 -translate-y-1/2 text-stone-400"
+      />
       {showButton && (
-        <button className="absolute right-1.5 top-1.5 h-8 px-5 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-semibold transition-colors">
-          Tìm kiếm
+        <button className="absolute right-0 top-0 h-full px-4 bg-stone-900 hover:bg-stone-800 text-white text-xs font-semibold tracking-wide transition-colors">
+          Tìm
         </button>
       )}
     </div>

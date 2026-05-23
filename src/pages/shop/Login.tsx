@@ -1,18 +1,21 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { login } from "../../redux/slices/ShopSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { loginThunk } from "../../redux/slices/ShopSlice";
+import type { AppDispatch } from "../../redux/Store";
 
 export default function Login() {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const authLoading = useSelector((s: any) => s.shop.authLoading as boolean);
+  const authError = useSelector((s: any) => s.shop.authError as string);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPwd, setShowPwd] = useState(false);
   const [remember, setRemember] = useState(true);
   const [error, setError] = useState("");
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!username.trim() || !password.trim()) {
       setError("Vui lòng nhập đầy đủ tài khoản và mật khẩu.");
@@ -23,29 +26,34 @@ export default function Login() {
       return;
     }
     setError("");
-    dispatch(login({ username: username.trim(), balance: 250000 }));
-    navigate("/shop");
+    const res = await dispatch(loginThunk({
+      usernameOrEmail: username.trim(),
+      password,
+    }));
+    if (loginThunk.fulfilled.match(res)) {
+      navigate("/shop");
+    }
   };
 
   return (
     <div className="max-w-md mx-auto px-4 py-8 md:py-12">
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 border border-stone-300 dark:border-slate-800 overflow-hidden font-serif">
         {/* Header */}
-        <div className="bg-gradient-to-br from-emerald-500 to-cyan-600 px-6 py-8 text-center text-white">
-          <div className="w-16 h-16 mx-auto rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center text-3xl font-black mb-3 shadow-lg">
+        <div className="bg-stone-900 dark:bg-stone-100 px-6 py-8 text-center text-white dark:text-stone-900 border-b border-stone-200 dark:border-slate-800">
+          <div className="w-14 h-14 mx-auto border-2 border-white dark:border-stone-900 flex items-center justify-center font-serif text-xl font-bold mb-3">
             BM
           </div>
-          <h1 className="text-2xl font-black">Đăng Nhập</h1>
-          <p className="text-emerald-50 text-sm mt-1">
-            Chào mừng quay lại Shop BM
+          <h1 className="font-serif text-2xl font-bold tracking-wide">Đăng Nhập</h1>
+          <p className="text-stone-300 dark:text-stone-700 text-xs mt-2 uppercase tracking-[0.2em]">
+            Chào mừng quay lại
           </p>
         </div>
 
         <form onSubmit={onSubmit} className="p-6 space-y-4">
           {/* Error */}
-          {error && (
+          {(error || authError) && (
             <div className="bg-rose-50 border border-rose-200 text-rose-700 text-sm px-3 py-2 rounded-lg">
-              ⚠️ {error}
+              {error || authError}
             </div>
           )}
 
@@ -114,9 +122,10 @@ export default function Login() {
           {/* Submit */}
           <button
             type="submit"
-            className="w-full h-12 rounded-lg bg-gradient-to-r from-emerald-500 to-cyan-600 hover:from-emerald-600 hover:to-cyan-700 text-white font-bold transition-colors shadow-lg shadow-emerald-200"
+            disabled={authLoading}
+            className="w-full h-12 rounded-lg bg-slate-900 hover:bg-slate-800 disabled:opacity-60 text-white font-semibold tracking-wide transition-colors"
           >
-            🔓 Đăng Nhập
+            {authLoading ? "Đang xử lý..." : "Đăng nhập"}
           </button>
 
           {/* Divider */}

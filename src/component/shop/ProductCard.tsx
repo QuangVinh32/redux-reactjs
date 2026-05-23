@@ -1,58 +1,87 @@
+import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { addToCart } from "../../redux/slices/ShopSlice";
+import { addToCartLocal } from "../../redux/slices/ShopSlice";
+import { cartApi } from "../../api/endpoints";
+import { tokenStorage, ApiClientError } from "../../api/client";
 import { formatVnd, type Product } from "../../constants/ShopData";
 
 const badgeStyles: Record<string, string> = {
-  HOT: "bg-rose-500",
-  NEW: "bg-blue-500",
-  SALE: "bg-amber-500",
+  HOT: "border-rose-700 text-rose-700",
+  NEW: "border-blue-700 text-blue-700",
+  SALE: "border-amber-700 text-amber-700",
 };
+
+const isUrl = (s?: string) =>
+  !!s && (s.startsWith("http://") || s.startsWith("https://") || s.startsWith("/"));
 
 export default function ProductCard({ product }: { product: Product }) {
   const dispatch = useDispatch();
+  const [adding, setAdding] = useState(false);
+  const [msg, setMsg] = useState("");
+
+  const onAdd = async () => {
+    setAdding(true);
+    setMsg("");
+    try {
+      if (tokenStorage.getAccess()) {
+        await cartApi.add(Number(product.id), 1);
+      }
+      dispatch(addToCartLocal(Number(product.id)));
+      setMsg("Đã thêm");
+      setTimeout(() => setMsg(""), 1500);
+    } catch (e) {
+      setMsg(e instanceof ApiClientError ? e.message : "Lỗi");
+      setTimeout(() => setMsg(""), 2500);
+    } finally {
+      setAdding(false);
+    }
+  };
 
   return (
-    <div className="group bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-emerald-400 dark:hover:border-emerald-500 hover:shadow-xl transition-all overflow-hidden flex flex-col">
-      <div className="relative h-28 sm:h-36 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 flex items-center justify-center text-5xl sm:text-7xl">
-        {product.image}
+    <div className="group bg-white dark:bg-slate-900 border border-stone-200 dark:border-slate-800 hover:border-stone-900 dark:hover:border-stone-300 transition-colors overflow-hidden flex flex-col">
+      <div className="relative h-32 sm:h-40 bg-stone-50 dark:bg-slate-800 flex items-center justify-center overflow-hidden">
+        {isUrl(product.image) ? (
+          <img src={product.image} alt={product.name} className="w-full h-full object-cover" loading="lazy" />
+        ) : (
+          <span className="text-4xl sm:text-5xl opacity-80">{product.image || "·"}</span>
+        )}
         {product.badge && (
-          <span
-            className={`absolute top-1.5 left-1.5 sm:top-2 sm:left-2 ${badgeStyles[product.badge]} text-white text-[9px] sm:text-[10px] font-black px-1.5 sm:px-2 py-0.5 rounded`}
-          >
+          <span className={`absolute top-2 left-2 bg-white/90 dark:bg-slate-900/90 border ${badgeStyles[product.badge] ?? "border-stone-700 text-stone-700"} text-[10px] font-bold px-2 py-0.5 uppercase tracking-wider`}>
             {product.badge}
           </span>
         )}
-        <span className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 bg-white/90 backdrop-blur text-slate-700 text-[9px] sm:text-[10px] font-semibold px-1.5 sm:px-2 py-0.5 rounded">
-          Kho: {product.stock}
-        </span>
       </div>
 
       <div className="p-3 sm:p-4 flex-1 flex flex-col">
-        <h3 className="font-bold text-slate-800 dark:text-slate-100 text-xs sm:text-sm leading-snug mb-1 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors line-clamp-2">
+        <h3 className="font-serif font-semibold text-stone-900 dark:text-stone-100 text-sm sm:text-base leading-snug mb-1 group-hover:underline line-clamp-2">
           {product.name}
         </h3>
-        <p className="hidden sm:block text-xs text-slate-500 dark:text-slate-400 mb-3 line-clamp-2 flex-1">
+        <p className="hidden sm:block text-xs text-stone-500 dark:text-stone-400 mb-3 line-clamp-2 flex-1">
           {product.description}
         </p>
 
-        <div className="flex items-end justify-between gap-2 mb-2 sm:mb-3 mt-2 sm:mt-0">
+        <div className="flex items-end justify-between gap-2 mb-3 mt-2">
           <div>
-            <div className="text-sm sm:text-lg font-black text-rose-600 leading-tight">
+            <div className="font-serif text-base sm:text-lg font-bold text-stone-900 dark:text-stone-100 leading-tight">
               {formatVnd(product.price)}
             </div>
             {product.oldPrice && (
-              <div className="text-[10px] sm:text-xs text-slate-400 line-through leading-tight">
+              <div className="text-[10px] sm:text-xs text-stone-400 line-through leading-tight">
                 {formatVnd(product.oldPrice)}
               </div>
             )}
           </div>
+          <div className="text-[10px] uppercase tracking-wider text-stone-500 dark:text-stone-400">
+            Kho {product.stock}
+          </div>
         </div>
 
         <button
-          onClick={() => dispatch(addToCart(product.id))}
-          className="w-full h-8 sm:h-9 rounded-lg bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white text-[11px] sm:text-xs font-bold transition-all"
+          onClick={onAdd}
+          disabled={adding}
+          className="w-full h-9 border border-stone-900 dark:border-stone-300 bg-white dark:bg-slate-900 hover:bg-stone-900 hover:text-white dark:hover:bg-stone-100 dark:hover:text-stone-900 disabled:opacity-60 text-stone-900 dark:text-stone-100 text-xs font-semibold tracking-wide transition-colors"
         >
-          🛒 Mua Ngay
+          {adding ? "..." : msg || "Thêm vào giỏ"}
         </button>
       </div>
     </div>

@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   setTheme,
@@ -9,8 +10,11 @@ import {
   setCurrency,
   setLanguage,
   resetSettings,
+  syncSettingsThunk,
   type Theme,
 } from "../../redux/slices/ShopSlice";
+import type { AppDispatch } from "../../redux/Store";
+import { tokenStorage } from "../../api/client";
 
 const themeOptions: {
   value: Theme;
@@ -57,8 +61,25 @@ const themeOptions: {
 ];
 
 export default function Settings() {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const s = useSelector((st: any) => st.shop);
+  const first = useRef(true);
+
+  // Đồng bộ về backend mỗi khi setting đổi (skip lần mount đầu)
+  useEffect(() => {
+    if (first.current) { first.current = false; return; }
+    if (!tokenStorage.getAccess()) return;
+    const handle = setTimeout(() => {
+      dispatch(syncSettingsThunk({
+        theme: s.theme, language: s.language, currency: s.currency,
+        fontScale: s.fontScale, compactMode: s.compactMode,
+        enableNotifications: s.enableNotifications,
+        enableSound: s.enableSound, enableDecorations: s.enableDecorations,
+      }));
+    }, 400);
+    return () => clearTimeout(handle);
+  }, [dispatch, s.theme, s.language, s.currency, s.fontScale,
+      s.compactMode, s.enableNotifications, s.enableSound, s.enableDecorations]);
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-6">

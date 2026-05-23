@@ -1,19 +1,35 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addBalance } from "../../redux/slices/ShopSlice";
+import { setBalance } from "../../redux/slices/ShopSlice";
+import { walletApi } from "../../api/endpoints";
+import { ApiClientError } from "../../api/client";
 import { formatVnd, rechargeMethods } from "../../constants/ShopData";
 
 const quickAmounts = [50000, 100000, 200000, 500000, 1000000, 2000000];
+const codeFromId = (id: string) => id.toUpperCase();
 
 export default function Recharge() {
   const dispatch = useDispatch();
   const { isLoggedIn, balance } = useSelector((s: any) => s.shop);
   const [method, setMethod] = useState("bank");
   const [amount, setAmount] = useState(100000);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
-  const onRecharge = () => {
-    dispatch(addBalance(amount));
-    alert(`Nạp thành công ${formatVnd(amount)}!`);
+  const onRecharge = async () => {
+    setLoading(true);
+    setMessage("");
+    setError("");
+    try {
+      const tx = await walletApi.recharge(codeFromId(method), amount);
+      dispatch(setBalance(tx.balanceAfter));
+      setMessage(`Nạp thành công ${formatVnd(tx.netAmount)} (đã bao gồm bonus ${formatVnd(tx.bonusAmount)}).`);
+    } catch (e) {
+      setError(e instanceof ApiClientError ? e.message : "Lỗi nạp tiền");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -128,12 +144,23 @@ export default function Recharge() {
               </div>
             </dl>
 
+            {message && (
+              <div className="mt-3 border border-emerald-700 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-200 text-xs px-3 py-2">
+                {message}
+              </div>
+            )}
+            {error && (
+              <div className="mt-3 border border-rose-700 bg-rose-50 dark:bg-rose-900/30 text-rose-800 dark:text-rose-200 text-xs px-3 py-2">
+                {error}
+              </div>
+            )}
+
             <button
               onClick={onRecharge}
-              disabled={!isLoggedIn || amount <= 0}
-              className="w-full h-12 mt-4 rounded-lg bg-rose-500 hover:bg-rose-600 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-bold transition-colors"
+              disabled={!isLoggedIn || amount <= 0 || loading}
+              className="w-full h-12 mt-4 bg-stone-900 hover:bg-stone-800 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold tracking-wide transition-colors"
             >
-              {isLoggedIn ? "✅ Xác Nhận Nạp" : "🔒 Đăng nhập để nạp"}
+              {loading ? "Đang xử lý..." : isLoggedIn ? "Xác nhận nạp" : "Đăng nhập để nạp"}
             </button>
           </div>
         </aside>

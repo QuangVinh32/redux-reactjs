@@ -1,207 +1,172 @@
 import { Link } from "react-router-dom";
-import { categories, products } from "../../constants/ShopData";
+import { useApi } from "../../hooks/useApi";
+import { catalogApi } from "../../api/endpoints";
 import ProductCard from "../../component/shop/ProductCard";
+import type { ApiProduct } from "../../api/types";
+
+const toCard = (p: ApiProduct) => ({
+  id: String(p.id),
+  categoryId: String(p.categoryId),
+  name: p.name,
+  price: p.price,
+  oldPrice: p.oldPrice,
+  stock: p.stock,
+  badge: p.badge,
+  description: p.shortDescription ?? "",
+  image: p.imageUrl ?? "",
+});
 
 export default function Home() {
-  const hotProducts = products.filter((p) => p.badge === "HOT" || p.badge === "SALE").slice(0, 4);
-  const newProducts = products.slice(0, 8);
+  const cats = useApi(() => catalogApi.categories(), []);
+  const featured = useApi(() => catalogApi.featured(), []);
+  const latest = useApi(() => catalogApi.latest(), []);
 
   return (
-    <div>
-      {/* HERO BANNER */}
-      <section className="bg-gradient-to-br from-emerald-600 via-emerald-700 to-cyan-700 text-white">
-        <div className="max-w-7xl mx-auto px-4 py-12 grid md:grid-cols-2 gap-8 items-center">
-          <div>
-            <div className="inline-block bg-amber-400 text-slate-900 text-xs font-black px-3 py-1 rounded-full mb-4">
-              🔥 KHUYẾN MÃI THÁNG 5/2026
-            </div>
-            <h1 className="text-4xl md:text-5xl font-black leading-tight mb-4">
-              Mua BM Facebook<br/>
-              <span className="text-amber-300">Giá Rẻ – Uy Tín</span>
-            </h1>
-            <p className="text-emerald-100 mb-6 text-sm md:text-base">
-              Kho hàng BM thường, BM xác minh doanh nghiệp Real Full Giấy Tờ.
-              Bảo hành 24/7, giao hàng tự động ngay sau khi thanh toán.
-            </p>
-            <div className="flex gap-3">
-              <Link
-                to="/shop/products"
-                className="px-6 py-3 bg-amber-400 hover:bg-amber-300 text-slate-900 font-bold rounded-lg transition-colors"
-              >
-                🛒 Mua Ngay
-              </Link>
-              <Link
-                to="/shop/recharge"
-                className="px-6 py-3 bg-white/10 hover:bg-white/20 backdrop-blur border border-white/30 text-white font-bold rounded-lg transition-colors"
-              >
-                💳 Nạp Tiền
-              </Link>
-            </div>
-
-            <div className="flex items-center gap-6 mt-8 text-sm">
-              <div>
-                <div className="text-2xl font-black text-amber-300">15K+</div>
-                <div className="text-emerald-200 text-xs">Đơn hàng</div>
-              </div>
-              <div>
-                <div className="text-2xl font-black text-amber-300">99%</div>
-                <div className="text-emerald-200 text-xs">Hài lòng</div>
-              </div>
-              <div>
-                <div className="text-2xl font-black text-amber-300">24/7</div>
-                <div className="text-emerald-200 text-xs">Hỗ trợ</div>
-              </div>
-            </div>
+    <div className="font-serif">
+      <section className="bg-stone-50 dark:bg-slate-900 border-b border-stone-200 dark:border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 py-16 md:py-20 text-center">
+          <div className="inline-block text-xs tracking-[0.3em] uppercase text-stone-500 dark:text-stone-400 mb-4">
+            Est. 2024 · Shop BM
           </div>
-
-          <div className="hidden md:block relative">
-            <div className="absolute inset-0 bg-white/10 rounded-3xl blur-3xl"></div>
-            <div className="relative bg-white/10 backdrop-blur border border-white/20 rounded-3xl p-6 shadow-2xl">
-              <div className="grid grid-cols-2 gap-3">
-                {categories.slice(0, 4).map((cat) => (
-                  <Link
-                    key={cat.id}
-                    to={`/shop/products?cat=${cat.id}`}
-                    className="bg-white/15 hover:bg-white/25 backdrop-blur rounded-xl p-4 transition-colors"
-                  >
-                    <div className="text-3xl mb-1">{cat.icon}</div>
-                    <div className="font-bold text-sm">{cat.name}</div>
-                    <div className="text-xs text-emerald-100">{cat.count} sản phẩm</div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* QUICK STATS BAR */}
-      <section className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
-        <div className="max-w-7xl mx-auto px-4 py-4 grid grid-cols-2 md:grid-cols-4 gap-3">
-          {[
-            { icon: "⚡", title: "Giao hàng tức thì", desc: "Tự động 24/7" },
-            { icon: "🛡️", title: "Bảo hành dài hạn", desc: "Đổi trả nhanh" },
-            { icon: "💎", title: "Giá rẻ nhất TT", desc: "Cam kết hoàn tiền" },
-            { icon: "💬", title: "Hỗ trợ tận tâm", desc: "Telegram / Zalo" },
-          ].map((it) => (
-            <div key={it.title} className="flex items-center gap-3">
-              <div className="text-3xl">{it.icon}</div>
-              <div>
-                <div className="font-bold text-slate-800 dark:text-slate-100 text-sm">{it.title}</div>
-                <div className="text-xs text-slate-500 dark:text-slate-400">{it.desc}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* DANH MỤC */}
-      <section className="max-w-7xl mx-auto px-4 py-10">
-        <div className="flex items-end justify-between mb-6">
-          <div>
-            <h2 className="text-2xl font-black text-slate-900 dark:text-white">
-              🗂️ Danh Mục Sản Phẩm
-            </h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-              Chọn danh mục bạn quan tâm
-            </p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-4">
-          {categories.map((cat) => (
-            <Link
-              key={cat.id}
-              to={`/shop/products?cat=${cat.id}`}
-              className="group bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-emerald-400 dark:hover:border-emerald-500 hover:shadow-lg transition-all p-4 text-center"
-            >
-              <div className="text-4xl mb-2 group-hover:scale-110 transition-transform">
-                {cat.icon}
-              </div>
-              <div className="font-bold text-sm text-slate-800 dark:text-slate-100 group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
-                {cat.name}
-              </div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-                {cat.count} sản phẩm
-              </div>
+          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-stone-900 dark:text-stone-100 leading-tight tracking-tight">
+            Tài khoản BM Facebook<br/>
+            <span className="italic text-stone-600 dark:text-stone-300">— uy tín, bảo hành dài hạn</span>
+          </h1>
+          <p className="mt-6 text-stone-600 dark:text-stone-400 max-w-2xl mx-auto text-base">
+            Kho hàng BM thường, BM xác minh doanh nghiệp Real Full Giấy Tờ.
+            Giao hàng tự động ngay sau khi thanh toán.
+          </p>
+          <div className="mt-8 flex justify-center gap-3">
+            <Link to="/shop/products" className="px-6 py-3 bg-stone-900 hover:bg-stone-800 text-white text-sm font-semibold tracking-wide transition-colors">
+              Xem sản phẩm
             </Link>
+            <Link to="/shop/recharge" className="px-6 py-3 border border-stone-900 dark:border-stone-300 text-stone-900 dark:text-stone-100 hover:bg-stone-900 hover:text-white dark:hover:bg-stone-100 dark:hover:text-stone-900 text-sm font-semibold tracking-wide transition-colors">
+              Nạp tiền
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white dark:bg-slate-900 border-b border-stone-200 dark:border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+          {[
+            { value: "15.000+", label: "Đơn hàng" },
+            { value: "99%", label: "Hài lòng" },
+            { value: "24/7", label: "Hỗ trợ" },
+            { value: "5 năm", label: "Kinh nghiệm" },
+          ].map((s) => (
+            <div key={s.label}>
+              <div className="font-serif text-3xl font-bold text-stone-900 dark:text-stone-100">{s.value}</div>
+              <div className="text-xs uppercase tracking-widest text-stone-500 dark:text-stone-400 mt-1">{s.label}</div>
+            </div>
           ))}
         </div>
       </section>
 
-      {/* FEATURED – BM XÁC MINH */}
-      <section className="bg-gradient-to-r from-amber-50 to-rose-50 dark:from-amber-950/30 dark:to-rose-950/30 border-y border-amber-100 dark:border-amber-900/40">
-        <div className="max-w-7xl mx-auto px-4 py-10">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
-                🔥 SẢN PHẨM HOT
-              </h2>
-              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                BM XMDT Real Full Giấy Tờ – Cháy hàng liên tục
-              </p>
-            </div>
-            <Link
-              to="/shop/products"
-              className="text-sm font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700"
-            >
+      <section className="max-w-7xl mx-auto px-4 py-12">
+        <SectionHeading title="Danh Mục" subtitle="Chọn loại tài khoản phù hợp" />
+        {cats.loading && <Skeleton rows={6} />}
+        {cats.error && <ErrorState message={cats.error} onRetry={cats.reload} />}
+        {cats.data && (
+          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-px bg-stone-200 dark:bg-slate-800 border border-stone-200 dark:border-slate-800">
+            {cats.data.map((cat) => (
+              <Link
+                key={cat.id}
+                to={`/shop/products?cat=${cat.id}`}
+                className="bg-white dark:bg-slate-900 hover:bg-stone-50 dark:hover:bg-slate-800 transition-colors p-5 text-center group"
+              >
+                <div className="font-serif text-lg font-semibold text-stone-900 dark:text-stone-100 group-hover:underline">
+                  {cat.name}
+                </div>
+                <div className="text-xs text-stone-500 dark:text-stone-400 mt-1 uppercase tracking-wider">
+                  {cat.productCount} sản phẩm
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section className="bg-stone-50 dark:bg-slate-900 border-y border-stone-200 dark:border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 py-12">
+          <div className="flex items-end justify-between mb-6">
+            <SectionHeading title="Sản phẩm nổi bật" subtitle="Hot · Sale" noMargin />
+            <Link to="/shop/products" className="text-sm text-stone-700 dark:text-stone-300 hover:underline">
               Xem tất cả →
             </Link>
           </div>
-
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-            {hotProducts.map((p) => (
-              <ProductCard key={p.id} product={p} />
-            ))}
-          </div>
+          {featured.loading && <Skeleton rows={4} />}
+          {featured.error && <ErrorState message={featured.error} onRetry={featured.reload} />}
+          {featured.data && featured.data.length > 0 && (
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+              {featured.data.map((p) => <ProductCard key={p.id} product={toCard(p)} />)}
+            </div>
+          )}
         </div>
       </section>
 
-      {/* SẢN PHẨM MỚI */}
-      <section className="max-w-7xl mx-auto px-4 py-10">
+      <section className="max-w-7xl mx-auto px-4 py-12">
         <div className="flex items-end justify-between mb-6">
-          <div>
-            <h2 className="text-2xl font-black text-slate-900 dark:text-white">
-              ✨ Sản Phẩm Mới Nhất
-            </h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-              Mới về kho – Số lượng có hạn
-            </p>
-          </div>
-          <Link
-            to="/shop/products"
-            className="text-sm font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700"
-          >
+          <SectionHeading title="Sản phẩm mới" subtitle="Mới về kho" noMargin />
+          <Link to="/shop/products" className="text-sm text-stone-700 dark:text-stone-300 hover:underline">
             Xem tất cả →
           </Link>
         </div>
-
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          {newProducts.map((p) => (
-            <ProductCard key={p.id} product={p} />
-          ))}
-        </div>
+        {latest.loading && <Skeleton rows={8} />}
+        {latest.error && <ErrorState message={latest.error} onRetry={latest.reload} />}
+        {latest.data && (
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            {latest.data.map((p) => <ProductCard key={p.id} product={toCard(p)} />)}
+          </div>
+        )}
       </section>
 
-      {/* CTA AFFILIATE */}
-      <section className="max-w-7xl mx-auto px-4 pb-12">
-        <div className="bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6 text-white">
+      <section className="max-w-7xl mx-auto px-4 pb-16">
+        <div className="border border-stone-300 dark:border-slate-700 p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
-            <div className="text-amber-400 font-bold text-sm mb-2">💰 KIẾM TIỀN CÙNG SHOP BM</div>
-            <h3 className="text-3xl font-black mb-2">Affiliate – Hoa hồng 15%</h3>
-            <p className="text-slate-300 text-sm">
+            <div className="text-xs uppercase tracking-[0.3em] text-stone-500 dark:text-stone-400 mb-2">Affiliate</div>
+            <h3 className="font-serif text-2xl md:text-3xl font-bold text-stone-900 dark:text-stone-100">
+              Giới thiệu — Hoa hồng 15%
+            </h3>
+            <p className="text-stone-600 dark:text-stone-400 text-sm mt-1">
               Giới thiệu bạn bè, nhận hoa hồng cho mỗi đơn hàng thành công.
-              Rút tiền nhanh chóng, không giới hạn.
             </p>
           </div>
-          <Link
-            to="/shop/affiliate"
-            className="px-8 py-4 bg-amber-400 hover:bg-amber-300 text-slate-900 font-black rounded-xl transition-colors whitespace-nowrap"
-          >
-            Tham Gia Ngay →
+          <Link to="/shop/affiliate" className="px-6 py-3 bg-stone-900 hover:bg-stone-800 text-white text-sm font-semibold tracking-wide whitespace-nowrap">
+            Tham gia →
           </Link>
         </div>
       </section>
+    </div>
+  );
+}
+
+function SectionHeading({ title, subtitle, noMargin }: { title: string; subtitle?: string; noMargin?: boolean }) {
+  return (
+    <div className={noMargin ? "" : "mb-6"}>
+      <h2 className="font-serif text-2xl md:text-3xl font-bold text-stone-900 dark:text-stone-100">{title}</h2>
+      {subtitle && <div className="text-xs uppercase tracking-widest text-stone-500 dark:text-stone-400 mt-1">{subtitle}</div>}
+    </div>
+  );
+}
+
+function Skeleton({ rows }: { rows: number }) {
+  return (
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      {Array.from({ length: rows }).map((_, i) => (
+        <div key={i} className="h-48 bg-stone-100 dark:bg-slate-800 animate-pulse" />
+      ))}
+    </div>
+  );
+}
+
+function ErrorState({ message, onRetry }: { message: string; onRetry: () => void }) {
+  return (
+    <div className="border border-stone-300 dark:border-slate-700 p-6 text-center">
+      <p className="text-sm text-stone-600 dark:text-stone-400 mb-3">{message}</p>
+      <button onClick={onRetry} className="text-sm underline text-stone-900 dark:text-stone-100 hover:no-underline">
+        Thử lại
+      </button>
     </div>
   );
 }
