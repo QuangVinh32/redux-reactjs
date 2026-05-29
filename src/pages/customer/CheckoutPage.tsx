@@ -10,6 +10,7 @@ import Button from "../../components/common/Button";
 import { useAppDispatch } from "../../redux/Store";
 import { showToast } from "../../redux/slices/uiSlice";
 import { fileUrl, formatVND, priceAfterDiscount } from "../../utils/format";
+import type { PaymentMethod } from "../../types/backend";
 
 export default function CheckoutPage() {
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ export default function CheckoutPage() {
   const [addressId, setAddressId] = useState<number | null>(null);
   const [voucherCode, setVoucherCode] = useState("");
   const [note, setNote] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState<"COD" | "MOMO">("COD");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("COD");
 
   // pick default address once loaded
   if (addresses && addresses.length > 0 && addressId === null) {
@@ -54,10 +55,19 @@ export default function CheckoutPage() {
         shippingAddressId: addressId,
         voucherCode: voucherCode || undefined,
         note: note || undefined,
+        paymentMethod,
       }).unwrap();
-      dispatch(showToast({ message: `Tạo đơn #${res.orderId} thành công`, kind: "success" }));
+      dispatch(
+        showToast({
+          message:
+            paymentMethod === "COD"
+              ? `Đặt đơn #${res.orderId} thành công — thanh toán khi nhận hàng`
+              : `Tạo đơn #${res.orderId}, đang chuyển sang Momo...`,
+          kind: "success",
+        })
+      );
 
-      if (paymentMethod === "MOMO") {
+      if (res.paymentMethod === "MOMO") {
         const pay = await createMomo(res.orderId).unwrap();
         window.location.href = pay.payUrl;
       } else {

@@ -6,6 +6,7 @@ import Empty from "../../components/common/Empty";
 import Pagination from "../../components/common/Pagination";
 import { fileUrl, formatDate, formatVND } from "../../utils/format";
 import { orderStatusColor, orderStatusLabel } from "../../utils/status";
+import { paymentMethodIcon, paymentMethodShortLabel } from "../../utils/payment";
 
 export default function OrderListPage() {
   const [page, setPage] = useState(0);
@@ -43,11 +44,18 @@ export default function OrderListPage() {
                 <p className="text-sm font-bold text-gray-800">Đơn #{o.orderId}</p>
                 <p className="text-xs text-gray-400">{formatDate(o.createdAt)}</p>
               </div>
-              <span
-                className={`rounded-full border px-2.5 py-0.5 text-[11px] font-bold ${orderStatusColor[o.status]}`}
-              >
-                {orderStatusLabel[o.status]}
-              </span>
+              <div className="flex items-center gap-1.5">
+                {o.paymentMethod && (
+                  <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-bold text-gray-600">
+                    {paymentMethodIcon[o.paymentMethod]} {paymentMethodShortLabel[o.paymentMethod]}
+                  </span>
+                )}
+                <span
+                  className={`rounded-full border px-2.5 py-0.5 text-[11px] font-bold ${orderStatusColor[o.status]}`}
+                >
+                  {orderStatusLabel[o.status]}
+                </span>
+              </div>
             </div>
             <div className="mt-3 flex gap-2 overflow-x-auto">
               {o.orderDetails?.slice(0, 4).map((d) => (

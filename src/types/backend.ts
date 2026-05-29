@@ -113,6 +113,8 @@ export type OrderStatus =
   | "CANCELED"
   | "RETURNED";
 
+export type PaymentMethod = "COD" | "MOMO";
+
 export type OrderDetail = {
   orderDetailId: number;
   productId: number;
@@ -138,9 +140,16 @@ export type Order = {
   discountAmount: number;
   totalAmount: number;
   status: OrderStatus;
+  paymentMethod?: PaymentMethod;
   voucherCode?: string;
   createdAt: string;
   orderDetails: OrderDetail[];
+};
+
+export type CheckoutResponse = {
+  orderId: number;
+  paymentMethod: PaymentMethod;
+  nextStep: string;
 };
 
 export type VoucherType = "PERCENT" | "AMOUNT";

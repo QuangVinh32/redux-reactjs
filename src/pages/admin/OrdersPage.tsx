@@ -12,6 +12,7 @@ import { useAppDispatch } from "../../redux/Store";
 import { showToast } from "../../redux/slices/uiSlice";
 import { fileUrl, formatDate, formatVND, priceAfterDiscount } from "../../utils/format";
 import { nextAdminStatuses, orderStatusColor, orderStatusLabel } from "../../utils/status";
+import { paymentMethodColor, paymentMethodIcon, paymentMethodLabel, paymentMethodShortLabel } from "../../utils/payment";
 import type { Order, OrderStatus } from "../../types/backend";
 
 const statusFilters: (OrderStatus | "")[] = [
@@ -83,6 +84,7 @@ export default function OrdersPage() {
                 <th className="px-4 py-3 text-left">Mã đơn</th>
                 <th className="px-4 py-3 text-left">Khách hàng</th>
                 <th className="px-4 py-3 text-left">Tổng</th>
+                <th className="px-4 py-3 text-left">Thanh toán</th>
                 <th className="px-4 py-3 text-left">Trạng thái</th>
                 <th className="px-4 py-3 text-left">Ngày tạo</th>
                 <th className="px-4 py-3" />
@@ -94,6 +96,13 @@ export default function OrdersPage() {
                   <td className="px-4 py-3 font-bold text-gray-800">#{o.orderId}</td>
                   <td className="px-4 py-3 text-gray-700">{o.fullName}</td>
                   <td className="px-4 py-3 font-bold text-rose-500">{formatVND(o.totalAmount)}</td>
+                  <td className="px-4 py-3">
+                    {o.paymentMethod && (
+                      <span className={`rounded-full border px-2 py-0.5 text-[11px] font-bold ${paymentMethodColor[o.paymentMethod]}`}>
+                        {paymentMethodIcon[o.paymentMethod]} {paymentMethodShortLabel[o.paymentMethod]}
+                      </span>
+                    )}
+                  </td>
                   <td className="px-4 py-3">
                     <span className={`rounded-full border px-2 py-0.5 text-[11px] font-bold ${orderStatusColor[o.status]}`}>
                       {orderStatusLabel[o.status]}
@@ -124,10 +133,17 @@ export default function OrdersPage() {
       >
         {selected && (
           <div className="space-y-4 text-sm">
-            <div className="flex items-center justify-between">
-              <span className={`rounded-full border px-3 py-1 text-xs font-bold ${orderStatusColor[selected.status]}`}>
-                {orderStatusLabel[selected.status]}
-              </span>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className={`rounded-full border px-3 py-1 text-xs font-bold ${orderStatusColor[selected.status]}`}>
+                  {orderStatusLabel[selected.status]}
+                </span>
+                {selected.paymentMethod && (
+                  <span className={`rounded-full border px-3 py-1 text-xs font-bold ${paymentMethodColor[selected.paymentMethod]}`}>
+                    {paymentMethodIcon[selected.paymentMethod]} {paymentMethodLabel[selected.paymentMethod]}
+                  </span>
+                )}
+              </div>
               <span className="text-xs text-gray-400">{formatDate(selected.createdAt)}</span>
             </div>
 

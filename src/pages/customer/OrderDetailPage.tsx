@@ -7,6 +7,7 @@ import { useAppDispatch } from "../../redux/Store";
 import { showToast } from "../../redux/slices/uiSlice";
 import { fileUrl, formatDate, formatVND, priceAfterDiscount } from "../../utils/format";
 import { orderStatusColor, orderStatusLabel } from "../../utils/status";
+import { paymentMethodColor, paymentMethodIcon, paymentMethodLabel } from "../../utils/payment";
 
 export default function OrderDetailPage() {
   const { id } = useParams();
@@ -41,16 +42,25 @@ export default function OrderDetailPage() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-6">
-      <div className="mb-5 flex items-center justify-between">
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-2">
         <div>
           <h1 className="text-2xl font-extrabold text-gray-800">Đơn #{order.orderId}</h1>
           <p className="text-sm text-gray-500">{formatDate(order.createdAt)}</p>
         </div>
-        <span
-          className={`rounded-full border px-3 py-1 text-xs font-bold ${orderStatusColor[order.status]}`}
-        >
-          {orderStatusLabel[order.status]}
-        </span>
+        <div className="flex flex-wrap items-center gap-2">
+          {order.paymentMethod && (
+            <span
+              className={`rounded-full border px-3 py-1 text-xs font-bold ${paymentMethodColor[order.paymentMethod]}`}
+            >
+              {paymentMethodIcon[order.paymentMethod]} {paymentMethodLabel[order.paymentMethod]}
+            </span>
+          )}
+          <span
+            className={`rounded-full border px-3 py-1 text-xs font-bold ${orderStatusColor[order.status]}`}
+          >
+            {orderStatusLabel[order.status]}
+          </span>
+        </div>
       </div>
 
       <div className="space-y-4">
@@ -115,11 +125,17 @@ export default function OrderDetailPage() {
           </div>
         </section>
 
+        {order.paymentMethod === "COD" && order.status === "PENDING" && (
+          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700">
+            💵 <strong>Thanh toán khi nhận hàng (COD).</strong> Vui lòng chuẩn bị <strong>{formatVND(order.totalAmount)}</strong> tiền mặt cho shipper.
+          </div>
+        )}
+
         {/* Actions */}
         <div className="flex flex-wrap gap-2">
-          {order.status === "PENDING" && (
+          {order.paymentMethod === "MOMO" && order.status === "PENDING" && (
             <Button variant="secondary" onClick={onPay} loading={payingMomo}>
-              💳 Thanh toán Momo
+              💳 Thanh toán Momo ngay
             </Button>
           )}
           {canCancel && (

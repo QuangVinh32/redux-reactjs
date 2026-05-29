@@ -2,9 +2,11 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithReauth } from "./baseQuery";
 import type {
   ApplyVoucherResult,
+  CheckoutResponse,
   Order,
   OrderStatus,
   Page,
+  PaymentMethod,
   Revenue,
 } from "../types/backend";
 
@@ -14,8 +16,13 @@ export const orderApi = createApi({
   tagTypes: ["Order", "Revenue"],
   endpoints: (b) => ({
     checkout: b.mutation<
-      { orderId: number },
-      { shippingAddressId: number; voucherCode?: string; note?: string }
+      CheckoutResponse,
+      {
+        shippingAddressId: number;
+        voucherCode?: string;
+        note?: string;
+        paymentMethod?: PaymentMethod;
+      }
     >({
       query: (p) => ({
         url: "/api/v1/orders/checkout",
@@ -24,6 +31,7 @@ export const orderApi = createApi({
           shippingAddressId: p.shippingAddressId,
           voucherCode: p.voucherCode || undefined,
           note: p.note || undefined,
+          paymentMethod: p.paymentMethod ?? "COD",
         },
       }),
       invalidatesTags: [{ type: "Order", id: "LIST" }],
