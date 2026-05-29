@@ -61,3 +61,13 @@
     transparent 70%
   );
 }
+
+/* iOS Safari auto-zooms vào input khi font-size < 16px.
+   Ép 16px trên mobile để chặn zoom, desktop giữ nguyên Tailwind class. */
+@media (max-width: 640px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
