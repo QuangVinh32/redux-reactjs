@@ -1,7 +1,15 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Mail, Lock, User as UserIcon, Phone, MapPin, Camera } from "lucide-react";
-import { useRegisterMutation } from "../../api/authApi";
+import {
+  Mail,
+  Lock,
+  User as UserIcon,
+  Phone,
+  MapPin,
+  Camera,
+  Eye,
+  EyeOff,
+} from "lucide-react"; import { useRegisterMutation } from "../../api/authApi";
 import { useAppDispatch } from "../../redux/Store";
 import { showToast } from "../../redux/slices/uiSlice";
 import Input from "../../components/common/Input";
@@ -22,7 +30,7 @@ export default function RegisterPage() {
   const [register, { isLoading, error }] = useRegisterMutation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-
+  const [showPassword, setShowPassword] = useState(false);
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm({ ...form, [k]: e.target.value });
 
@@ -93,15 +101,29 @@ export default function RegisterPage() {
           onChange={set("email")}
           required
         />
-        <Input
-          label="Mật khẩu"
-          icon={<Lock size={16} />}
-          type="password"
-          value={form.password}
-          onChange={set("password")}
-          hint="Tối thiểu 8 ký tự"
-          required
-        />
+        <div className="relative">
+          <Input
+            label="Mật khẩu"
+            icon={<Lock size={16} />}
+            type={showPassword ? "text" : "password"}
+            value={form.password}
+            onChange={set("password")}
+            hint="Tối thiểu 8 ký tự"
+            required
+          />
+
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-[38px] text-gray-500 hover:text-gray-700"
+          >
+            {showPassword ? (
+              <EyeOff size={18} />
+            ) : (
+              <Eye size={18} />
+            )}
+          </button>
+        </div>
         <Input
           label="Số điện thoại"
           icon={<Phone size={16} />}

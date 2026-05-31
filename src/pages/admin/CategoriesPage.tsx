@@ -39,7 +39,7 @@ export default function CategoriesPage() {
   };
   const startEdit = (c: Category) => {
     setEditing(c);
-    setName(c.categoryName);
+    setName(c.categoryStatus);
     setDesc(c.description ?? "");
     setImage(null);
     setPreview(c.image ? fileUrl(c.image) : null);
@@ -49,7 +49,7 @@ export default function CategoriesPage() {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const fd = new FormData();
-    fd.append("categoryName", name);
+    fd.append("categoryStatus", name);
     fd.append("description", desc);
     if (image) fd.append("image", image);
     try {
@@ -67,7 +67,7 @@ export default function CategoriesPage() {
   };
 
   const onDelete = async (c: Category) => {
-    if (!confirm(`Xóa "${c.categoryName}"?`)) return;
+    if (!confirm(`Xóa "${c.categoryStatus}"?`)) return;
     try {
       await del(c.categoryId).unwrap();
       dispatch(showToast({ message: "Đã xóa", kind: "success" }));
@@ -94,7 +94,7 @@ export default function CategoriesPage() {
               {c.image && <img src={fileUrl(c.image)} alt="" className="h-full w-full object-cover" />}
             </div>
             <div className="p-3">
-              <p className="font-bold text-gray-800">{c.categoryName}</p>
+              <p className="font-bold text-gray-800">{c.categoryStatus}</p>
               {c.description && (
                 <p className="mt-1 line-clamp-1 text-xs text-gray-500">{c.description}</p>
               )}

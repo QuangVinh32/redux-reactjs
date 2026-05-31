@@ -69,16 +69,15 @@ export default function HomePage() {
         <section className="mt-10">
           <h2 className="mb-4 text-lg font-extrabold text-gray-800">Danh mục</h2>
           <div className="flex gap-3 overflow-x-auto pb-2">
-            {categories.content.map((c) => (
+            {/* {categories.content.map((c) => (
               <Link
-                key={c.categoryId}
-                to={`/products?categoryId=${c.categoryId}`}
+                key={c.categoryId} to={`/products?categoryId=${c.categoryId}`}
                 className="group flex min-w-[120px] flex-col items-center rounded-2xl border border-gray-100 bg-white p-4 transition hover:border-rose-200 hover:shadow-md"
               >
                 {c.image ? (
                   <img
                     src={fileUrl(c.image)}
-                    alt={c.categoryName}
+                    alt={c.categoryStatus}
                     className="h-14 w-14 rounded-full object-cover"
                   />
                 ) : (
@@ -87,7 +86,24 @@ export default function HomePage() {
                   </div>
                 )}
                 <span className="mt-2 text-xs font-semibold text-gray-700 group-hover:text-rose-500">
-                  {c.categoryName}
+                  {c.categoryStatus}
+                </span>
+              </Link>
+            ))} */}
+            {categories?.content.map((c) => (
+              <Link
+                key={c.categoryId}
+                to={`/products?categoryId=${c.categoryId}`}
+                className="group flex min-w-[120px] flex-col items-center rounded-2xl border border-gray-100 bg-white p-4"
+              >
+                <img
+                  src={fileUrl(c.categoryImage)}
+                  alt={c.categoryStatus}
+                  className="h-14 w-14 rounded-full object-cover"
+                />
+
+                <span>
+                  {c.categoryStatus}
                 </span>
               </Link>
             ))}

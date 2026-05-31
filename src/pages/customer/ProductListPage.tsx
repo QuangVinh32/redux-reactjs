@@ -28,6 +28,8 @@ export default function ProductListPage() {
     q: q || undefined,
   });
 
+  console.log("Products", data);
+
   const setParam = (key: string, value: string | null) => {
     const next = new URLSearchParams(params);
     if (value) next.set(key, value);
@@ -57,7 +59,7 @@ export default function ProductListPage() {
       <div className="mb-6 flex flex-wrap gap-2">
         <button
           onClick={() => setParam("categoryId", null)}
-          className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${!categoryId ? "bg-rose-500 text-white" : "bg-white text-gray-600 hover:bg-gray-50"}`}
+          className={`rounded-lg px-4 py-1.5 text-sm font-medium transition ${!categoryId ? "bg-rose-500 text-white" : "bg-white text-gray-600 hover:bg-gray-50"}`}
         >
           Tất cả
         </button>
@@ -65,13 +67,13 @@ export default function ProductListPage() {
           <button
             key={c.categoryId}
             onClick={() => setParam("categoryId", String(c.categoryId))}
-            className={`rounded-full border px-4 py-1.5 text-sm font-medium transition ${
+            className={`rounded-lg border px-4 py-1.5 text-sm font-medium transition ${
               Number(categoryId) === c.categoryId
                 ? "border-rose-500 bg-rose-500 text-white"
                 : "border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
             }`}
           >
-            {c.categoryName}
+            {c.categoryStatus}
           </button>
         ))}
       </div>
@@ -86,7 +88,7 @@ export default function ProductListPage() {
         <FullPageSpinner />
       ) : data && data.content.length > 0 ? (
         <>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-5 lg:grid-cols-6">
             {data.content.map((p) => (
               <ProductCard key={p.productId} product={p} />
             ))}

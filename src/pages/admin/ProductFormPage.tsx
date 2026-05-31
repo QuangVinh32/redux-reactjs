@@ -134,7 +134,7 @@ export default function ProductFormPage() {
                 <option value={0}>-- Chọn danh mục --</option>
                 {categories?.content.map((c) => (
                   <option key={c.categoryId} value={c.categoryId}>
-                    {c.categoryName}
+                    {c.categoryStatus}
                   </option>
                 ))}
               </select>

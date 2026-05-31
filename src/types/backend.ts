@@ -46,8 +46,8 @@ export type User = {
 
 export type Category = {
   categoryId: number;
-  categoryName: string;
-  image?: string;
+  categoryStatus: string;
+  categoryImage?: string;
   description?: string;
 };
 
@@ -59,18 +59,17 @@ export type ProductSize = {
   quantity: number;
 };
 
-export type ProductImage = { productImageId: number; image: string };
+export type ProductImage = { productImageId: number};
 
 export type Product = {
   productId: number;
   productName: string;
   description?: string;
   categoryId: number;
-  categoryName?: string;
+  categoryStatus?: string;
   productImages: ProductImage[];
   productSizes: ProductSize[];
   averageRating?: number;
-  totalSold?: number;
 };
 
 export type Banner = {

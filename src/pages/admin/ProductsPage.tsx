@@ -88,7 +88,7 @@ export default function ProductsPage() {
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-gray-600">{p.categoryName ?? "—"}</td>
+                    <td className="px-4 py-3 text-gray-600">{p.categoryStatus ?? "—"}</td>
                     <td className="px-4 py-3">
                       <div className="flex flex-wrap gap-1">
                         {p.productSizes?.slice(0, 3).map((s) => (

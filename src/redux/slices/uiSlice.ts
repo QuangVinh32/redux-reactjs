@@ -7,7 +7,7 @@ type UiState = {
 };
 
 const initialState: UiState = {
-  sidebarOpen: true,
+  sidebarOpen: false,
   cartDrawerOpen: false,
   toast: null,
 };

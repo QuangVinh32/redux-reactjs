@@ -16,6 +16,7 @@ import Button from "../../components/common/Button";
 import { useAppDispatch, useAppSelector } from "../../redux/Store";
 import { showToast } from "../../redux/slices/uiSlice";
 import { fileUrl, formatDate, formatVND, priceAfterDiscount } from "../../utils/format";
+// import { console } from "inspector/promises";
 
 export default function ProductDetailPage() {
   const { id } = useParams();
@@ -40,8 +41,9 @@ export default function ProductDetailPage() {
   if (isLoading || !product) return <FullPageSpinner />;
 
   const size = product.productSizes?.[sizeIdx];
+  console.log({ size });
   const price = size ? priceAfterDiscount(size.price, size.discount) : 0;
-
+  console.log({ price });
   const onAdd = async () => {
     if (!user) {
       dispatch(showToast({ message: "Vui lòng đăng nhập", kind: "error" }));
@@ -116,7 +118,7 @@ export default function ProductDetailPage() {
         {/* Info */}
         <div>
           <p className="text-xs font-semibold uppercase text-rose-500">
-            {product.categoryName ?? "Sản phẩm"}
+            {product.categoryStatus ?? "Sản phẩm"}
           </p>
           <h1 className="mt-1 text-3xl font-extrabold text-gray-800">
             {product.productName}
@@ -128,12 +130,7 @@ export default function ProductDetailPage() {
             </span>
             <span className="text-gray-400">•</span>
             <span className="text-gray-500">{reviews?.length ?? 0} đánh giá</span>
-            {product.totalSold != null && (
-              <>
-                <span className="text-gray-400">•</span>
-                <span className="text-gray-500">Đã bán {product.totalSold}</span>
-              </>
-            )}
+ 
           </div>
 
           <div className="mt-4 flex items-baseline gap-3">
