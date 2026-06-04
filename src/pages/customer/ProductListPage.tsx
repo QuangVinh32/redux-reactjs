@@ -9,7 +9,6 @@ import Empty from "../../components/common/Empty";
 const sortOptions = [
   { value: "productId,desc", label: "Mới nhất" },
   { value: "totalSold,desc", label: "Bán chạy" },
-  { value: "averageRating,desc", label: "Đánh giá cao" },
 ];
 
 export default function ProductListPage() {
@@ -27,8 +26,6 @@ export default function ProductListPage() {
     categoryId: categoryId ? Number(categoryId) : undefined,
     q: q || undefined,
   });
-
-  console.log("Products", data);
 
   const setParam = (key: string, value: string | null) => {
     const next = new URLSearchParams(params);
@@ -65,10 +62,10 @@ export default function ProductListPage() {
         </button>
         {categories?.content.map((c) => (
           <button
-            key={c.categoryId}
+            key={String(c.categoryId)}
             onClick={() => setParam("categoryId", String(c.categoryId))}
             className={`rounded-lg border px-4 py-1.5 text-sm font-medium transition ${
-              Number(categoryId) === c.categoryId
+              String(categoryId) === String(c.categoryId)
                 ? "border-rose-500 bg-rose-500 text-white"
                 : "border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
             }`}

@@ -4,8 +4,9 @@ import type {
   Banner,
   Category,
   Page,
-  Product,
+  ProductDetail,
   ProductSize,
+  ProductSummary,
   Review,
 } from "../types/backend";
 
@@ -16,7 +17,7 @@ export const catalogApi = createApi({
   endpoints: (b) => ({
     // products
     listProducts: b.query<
-      Page<Product>,
+      Page<ProductSummary>,
       { page?: number; size?: number; sort?: string; categoryId?: number; q?: string }
     >({
       query: (p = {}) => ({
@@ -37,19 +38,19 @@ export const catalogApi = createApi({
             ]
           : [{ type: "Product" as const, id: "LIST" }],
     }),
-    getProductUser: b.query<Product, number>({
+    getProductUser: b.query<ProductDetail, number>({
       query: (id) => `/api/products/user/${id}`,
       providesTags: (_r, _e, id) => [{ type: "Product", id }],
     }),
-    getProductAdmin: b.query<Product, number>({
+    getProductAdmin: b.query<ProductSummary, number>({
       query: (id) => `/api/products/admin/${id}`,
       providesTags: (_r, _e, id) => [{ type: "Product", id }],
     }),
-    createProduct: b.mutation<Product, FormData>({
+    createProduct: b.mutation<ProductSummary, FormData>({
       query: (body) => ({ url: "/api/products", method: "POST", body }),
       invalidatesTags: [{ type: "Product", id: "LIST" }],
     }),
-    updateProduct: b.mutation<Product, { id: number; body: FormData }>({
+    updateProduct: b.mutation<ProductSummary, { id: number; body: FormData }>({
       query: ({ id, body }) => ({ url: `/api/products/${id}`, method: "PUT", body }),
       invalidatesTags: (_r, _e, a) => [
         { type: "Product", id: a.id },
@@ -61,13 +62,13 @@ export const catalogApi = createApi({
       invalidatesTags: [{ type: "Product", id: "LIST" }],
     }),
 
-    // product sizes
+    // product sizes (separate endpoint that DOES include productSizeId)
     getSizesByProduct: b.query<ProductSize[], number>({
       query: (productId) => `/api/product_sizes/product/${productId}`,
       providesTags: (_r, _e, productId) => [{ type: "ProductSize", id: productId }],
     }),
     bulkUpsertSizes: b.mutation<
-      ProductSize[],
+      void,
       { productId: number; sizes: Partial<ProductSize>[] }
     >({
       query: ({ productId, sizes }) => ({
@@ -102,7 +103,7 @@ export const catalogApi = createApi({
       invalidatesTags: [{ type: "Category", id: "LIST" }],
     }),
 
-    // banners (admin only per API doc — but list usually shown on home)
+    // banners
     listBanners: b.query<Page<Banner>, { page?: number; size?: number }>({
       query: (p = {}) => ({
         url: "/api/banners",
@@ -123,21 +124,26 @@ export const catalogApi = createApi({
       invalidatesTags: [{ type: "Banner", id: "LIST" }],
     }),
 
-    // reviews
-    listReviewsByProduct: b.query<Review[], number>({
-      query: (productId) => ({ url: `/api/reviews`, params: { productId } }),
-      providesTags: (_r, _e, productId) => [{ type: "Review", id: productId }],
+    // reviews — /api/reviews returns ALL reviews; filter client-side by product
+    listAllReviews: b.query<Review[], void>({
+      query: () => `/api/reviews`,
+      providesTags: [{ type: "Review", id: "LIST" }],
     }),
     createReview: b.mutation<
-      Review,
+      string,
       { productId: number; rating: number; reviewText: string }
     >({
-      query: (body) => ({ url: "/api/reviews", method: "POST", body }),
-      invalidatesTags: (_r, _e, a) => [{ type: "Review", id: a.productId }],
+      query: (body) => ({
+        url: "/api/reviews",
+        method: "POST",
+        body,
+        responseHandler: (r) => r.text(),
+      }),
+      invalidatesTags: [{ type: "Review", id: "LIST" }],
     }),
-    deleteReview: b.mutation<void, { id: number; productId: number }>({
-      query: ({ id }) => ({ url: `/api/reviews/${id}`, method: "DELETE" }),
-      invalidatesTags: (_r, _e, a) => [{ type: "Review", id: a.productId }],
+    deleteReview: b.mutation<void, number>({
+      query: (id) => ({ url: `/api/reviews/${id}`, method: "DELETE" }),
+      invalidatesTags: [{ type: "Review", id: "LIST" }],
     }),
   }),
 });
@@ -159,7 +165,7 @@ export const {
   useCreateBannerMutation,
   useUpdateBannerMutation,
   useDeleteBannerMutation,
-  useListReviewsByProductQuery,
+  useListAllReviewsQuery,
   useCreateReviewMutation,
   useDeleteReviewMutation,
 } = catalogApi;

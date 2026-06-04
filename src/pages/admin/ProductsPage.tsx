@@ -9,7 +9,7 @@ import { FullPageSpinner } from "../../components/common/Spinner";
 import Pagination from "../../components/common/Pagination";
 import { useAppDispatch } from "../../redux/Store";
 import { showToast } from "../../redux/slices/uiSlice";
-import { fileUrl, formatVND, priceAfterDiscount } from "../../utils/format";
+import { fileUrl } from "../../utils/format";
 
 export default function ProductsPage() {
   const [page, setPage] = useState(0);
@@ -59,70 +59,46 @@ export default function ProductsPage() {
               <tr>
                 <th className="px-4 py-3 text-left">Sản phẩm</th>
                 <th className="px-4 py-3 text-left">Danh mục</th>
-                <th className="px-4 py-3 text-left">Sizes</th>
-                <th className="px-4 py-3 text-left">Giá từ</th>
                 <th className="px-4 py-3 text-right">Hành động</th>
               </tr>
             </thead>
             <tbody>
-              {data?.content.map((p) => {
-                const minPrice = p.productSizes?.length
-                  ? Math.min(
-                      ...p.productSizes.map((s) => priceAfterDiscount(s.price, s.discount))
-                    )
-                  : 0;
-                return (
-                  <tr key={p.productId} className="border-b border-gray-100 last:border-0 hover:bg-gray-50/60">
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-3">
-                        {p.productImages?.[0] && (
-                          <img
-                            src={fileUrl(p.productImages[0].image)}
-                            alt=""
-                            className="h-10 w-10 rounded-lg object-cover"
-                          />
-                        )}
-                        <div>
-                          <p className="font-semibold text-gray-800">{p.productName}</p>
-                          <p className="text-xs text-gray-400">#{p.productId}</p>
-                        </div>
+              {data?.content.map((p) => (
+                <tr key={p.productId} className="border-b border-gray-100 last:border-0 hover:bg-gray-50/60">
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-3">
+                      {p.productImages?.[0] && (
+                        <img
+                          src={fileUrl(p.productImages[0])}
+                          alt=""
+                          className="h-10 w-10 rounded-lg object-cover"
+                        />
+                      )}
+                      <div>
+                        <p className="font-semibold text-gray-800">{p.productName}</p>
+                        <p className="text-xs text-gray-400">#{p.productId}</p>
                       </div>
-                    </td>
-                    <td className="px-4 py-3 text-gray-600">{p.categoryStatus ?? "—"}</td>
-                    <td className="px-4 py-3">
-                      <div className="flex flex-wrap gap-1">
-                        {p.productSizes?.slice(0, 3).map((s) => (
-                          <span
-                            key={s.productSizeId}
-                            className="rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-semibold text-gray-600"
-                          >
-                            {s.sizeName} ({s.quantity})
-                          </span>
-                        ))}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 font-semibold text-rose-500">
-                      {formatVND(minPrice)}
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex justify-end gap-1">
-                        <Link
-                          to={`/admin/products/${p.productId}`}
-                          className="rounded p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700"
-                        >
-                          <Edit2 size={14} />
-                        </Link>
-                        <button
-                          onClick={() => onDelete(p.productId, p.productName)}
-                          className="rounded p-1.5 text-gray-400 hover:bg-gray-100 hover:text-rose-500"
-                        >
-                          <Trash2 size={14} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 text-gray-600">{String(p.categoryStatus ?? "—")}</td>
+                  <td className="px-4 py-3">
+                    <div className="flex justify-end gap-1">
+                      <Link
+                        to={`/admin/products/${p.productId}`}
+                        className="rounded p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700"
+                      >
+                        <Edit2 size={14} />
+                      </Link>
+                      <button
+                        onClick={() => onDelete(p.productId, p.productName)}
+                        className="rounded p-1.5 text-gray-400 hover:bg-gray-100 hover:text-rose-500"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
           {data && (

@@ -4,6 +4,7 @@ import { Camera, Plus, Trash2, ArrowLeft } from "lucide-react";
 import {
   useCreateProductMutation,
   useGetProductAdminQuery,
+  useGetSizesByProductQuery,
   useListCategoriesQuery,
   useUpdateProductMutation,
   useBulkUpsertSizesMutation,
@@ -27,6 +28,9 @@ export default function ProductFormPage() {
   const { data: existing, isLoading: loadingExisting } = useGetProductAdminQuery(Number(id), {
     skip: !isEdit,
   });
+  const { data: existingSizes } = useGetSizesByProductQuery(Number(id), {
+    skip: !isEdit,
+  });
   const { data: categories } = useListCategoriesQuery({});
   const [createProduct, { isLoading: creating }] = useCreateProductMutation();
   const [updateProduct, { isLoading: updating }] = useUpdateProductMutation();
@@ -44,16 +48,20 @@ export default function ProductFormPage() {
 
   useEffect(() => {
     if (existing) {
-      setForm({
+      setForm((prev) => ({
+        ...prev,
         productName: existing.productName,
-        description: existing.description ?? "",
+        // ProductForAdmin DTO has no description — keep current form value
         categoryId: existing.categoryId,
-      });
-      setSizes(
-        existing.productSizes.map((s, i) => ({ ...s, _tempKey: `s${i}` })) ?? []
-      );
+      }));
     }
   }, [existing]);
+
+  useEffect(() => {
+    if (existingSizes && existingSizes.length > 0) {
+      setSizes(existingSizes.map((s, i) => ({ ...s, _tempKey: `s${i}` })));
+    }
+  }, [existingSizes]);
 
   if (isEdit && loadingExisting) return <FullPageSpinner />;
 
@@ -73,27 +81,23 @@ export default function ProductFormPage() {
     fd.append("description", form.description);
     fd.append("categoryId", String(form.categoryId));
     images.forEach((img) => fd.append("productImages", img));
-    fd.append(
-      "productSizes",
-      JSON.stringify(
-        sizes.map(({ _tempKey: _k, ...rest }) => rest)
-      )
-    );
 
     try {
       let productId: number;
       if (isEdit) {
         const updated = await updateProduct({ id: Number(id), body: fd }).unwrap();
         productId = updated.productId;
-        // also bulk upsert sizes (safer)
-        await bulkSizes({
-          productId,
-          sizes: sizes.map(({ _tempKey: _k, ...rest }) => rest),
-        }).unwrap();
       } else {
         const created = await createProduct(fd).unwrap();
         productId = created.productId;
       }
+
+      // Always upsert sizes after product create/update — separate /api/product_sizes/bulk endpoint
+      await bulkSizes({
+        productId,
+        sizes: sizes.map(({ _tempKey: _k, ...rest }) => rest),
+      }).unwrap();
+
       dispatch(showToast({ message: isEdit ? "Đã cập nhật" : "Đã tạo sản phẩm", kind: "success" }));
       navigate("/admin/products");
     } catch (e: any) {
@@ -133,7 +137,7 @@ export default function ProductFormPage() {
               >
                 <option value={0}>-- Chọn danh mục --</option>
                 {categories?.content.map((c) => (
-                  <option key={c.categoryId} value={c.categoryId}>
+                  <option key={String(c.categoryId)} value={Number(c.categoryId)}>
                     {c.categoryStatus}
                   </option>
                 ))}
@@ -154,9 +158,9 @@ export default function ProductFormPage() {
         <section className="rounded-2xl bg-white p-5 shadow-sm">
           <h2 className="mb-4 text-sm font-bold text-gray-700">Ảnh sản phẩm</h2>
           <div className="grid grid-cols-3 gap-3 sm:grid-cols-5">
-            {existing?.productImages?.map((img) => (
-              <div key={img.productImageId} className="aspect-square overflow-hidden rounded-lg">
-                <img src={fileUrl(img.image)} alt="" className="h-full w-full object-cover" />
+            {existing?.productImages?.map((url, i) => (
+              <div key={`existing-${i}`} className="aspect-square overflow-hidden rounded-lg">
+                <img src={fileUrl(url)} alt="" className="h-full w-full object-cover" />
               </div>
             ))}
             {images.map((f, i) => (
@@ -189,7 +193,7 @@ export default function ProductFormPage() {
             {sizes.map((s, i) => (
               <div key={s._tempKey} className="grid grid-cols-12 gap-2 rounded-lg border border-gray-100 p-2">
                 <input
-                  placeholder="Size"
+                  placeholder="Size (S/M/L)"
                   value={s.sizeName ?? ""}
                   onChange={(e) => updateSize(i, { sizeName: e.target.value })}
                   className="col-span-3 rounded border border-gray-200 px-2 py-1.5 text-sm"

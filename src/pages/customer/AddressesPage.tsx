@@ -15,7 +15,7 @@ import { useAppDispatch } from "../../redux/Store";
 import { showToast } from "../../redux/slices/uiSlice";
 import type { ShippingAddress } from "../../types/backend";
 
-type FormValues = Omit<ShippingAddress, "shippingAddressId">;
+type FormValues = Omit<ShippingAddress, "id">;
 const empty: FormValues = {
   receiverName: "",
   receiverPhone: "",
@@ -23,7 +23,7 @@ const empty: FormValues = {
   ward: "",
   district: "",
   province: "",
-  default: false,
+  isDefault: false,
 };
 
 export default function AddressesPage() {
@@ -44,7 +44,7 @@ export default function AddressesPage() {
   };
   const startEdit = (a: ShippingAddress) => {
     setEditing(a);
-    const { shippingAddressId: _, ...rest } = a;
+    const { id: _, ...rest } = a;
     setForm(rest);
     setOpen(true);
   };
@@ -53,7 +53,7 @@ export default function AddressesPage() {
     e.preventDefault();
     try {
       if (editing) {
-        await update({ id: editing.shippingAddressId, body: form }).unwrap();
+        await update({ id: editing.id, body: form }).unwrap();
         dispatch(showToast({ message: "Đã cập nhật địa chỉ", kind: "success" }));
       } else {
         await create(form).unwrap();
@@ -68,7 +68,7 @@ export default function AddressesPage() {
   const onDelete = async (a: ShippingAddress) => {
     if (!confirm("Xóa địa chỉ này?")) return;
     try {
-      await del(a.shippingAddressId).unwrap();
+      await del(a.id).unwrap();
       dispatch(showToast({ message: "Đã xóa", kind: "success" }));
     } catch (e: any) {
       dispatch(showToast({ message: e?.data?.message ?? "Lỗi", kind: "error" }));
@@ -89,13 +89,13 @@ export default function AddressesPage() {
       {data && data.length > 0 ? (
         <div className="space-y-3">
           {data.map((a) => (
-            <div key={a.shippingAddressId} className="rounded-2xl border border-gray-100 bg-white p-4">
+            <div key={a.id} className="rounded-2xl border border-gray-100 bg-white p-4">
               <div className="flex items-start gap-3">
                 <MapPin className="mt-1 text-rose-500" size={18} />
                 <div className="flex-1">
                   <p className="text-sm font-semibold text-gray-800">
                     {a.receiverName} • {a.receiverPhone}
-                    {a.default && (
+                    {a.isDefault && (
                       <span className="ml-2 rounded bg-rose-100 px-1.5 py-0.5 text-[10px] font-bold text-rose-600">
                         Mặc định
                       </span>
@@ -160,28 +160,25 @@ export default function AddressesPage() {
           <div className="grid gap-3 sm:grid-cols-3">
             <Input
               label="Phường/Xã"
-              value={form.ward}
+              value={form.ward ?? ""}
               onChange={(e) => setForm({ ...form, ward: e.target.value })}
-              required
             />
             <Input
               label="Quận/Huyện"
-              value={form.district}
+              value={form.district ?? ""}
               onChange={(e) => setForm({ ...form, district: e.target.value })}
-              required
             />
             <Input
               label="Tỉnh/Thành phố"
-              value={form.province}
+              value={form.province ?? ""}
               onChange={(e) => setForm({ ...form, province: e.target.value })}
-              required
             />
           </div>
           <label className="flex items-center gap-2 text-sm">
             <input
               type="checkbox"
-              checked={form.default}
-              onChange={(e) => setForm({ ...form, default: e.target.checked })}
+              checked={form.isDefault}
+              onChange={(e) => setForm({ ...form, isDefault: e.target.checked })}
               className="accent-rose-500"
             />
             Đặt làm địa chỉ mặc định

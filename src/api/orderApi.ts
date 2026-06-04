@@ -64,6 +64,7 @@ export const orderApi = createApi({
       }),
       providesTags: [{ type: "Order", id: "LIST" }],
     }),
+    // backend PUT /{orderId} takes `UpdateOrder { status }` as JSON body
     updateStatus: b.mutation<Order, { orderId: number; status: OrderStatus }>({
       query: ({ orderId, status }) => ({
         url: `/api/v1/orders/${orderId}`,

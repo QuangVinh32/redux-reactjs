@@ -6,13 +6,13 @@ import { fileUrl } from "../../utils/format";
 import { ChevronRight } from "lucide-react";
 
 export default function HomePage() {
-  const { data: products, isLoading } = useListProductsQuery({ size: 8, sort: "totalSold,desc" });
+  const { data: products, isLoading } = useListProductsQuery({ size: 8, sort: "productId,desc" });
   const { data: categories } = useListCategoriesQuery({});
   const { data: banners } = useListBannersQuery({ size: 5 });
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6">
-      {/* Hero / Banner */}
+      {/* Hero */}
       <section className="overflow-hidden rounded-3xl bg-gradient-to-br from-rose-100 via-amber-50 to-white p-8 sm:p-12">
         <div className="grid items-center gap-6 sm:grid-cols-2">
           <div>
@@ -34,10 +34,10 @@ export default function HomePage() {
                 Khám phá thực đơn
               </Link>
               <Link
-                to="/products?sort=averageRating,desc"
+                to="/products?sort=totalSold,desc"
                 className="rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50"
               >
-                Top đánh giá
+                Bán chạy nhất
               </Link>
             </div>
           </div>
@@ -45,21 +45,23 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Banner carousel (simple grid) */}
+      {/* Banners */}
       {banners && banners.content.length > 0 && (
         <section className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {banners.content.slice(0, 3).map((b) => (
-            <a
+            <div
               key={b.bannerId}
-              href={b.redirectUrl ?? "#"}
               className="block overflow-hidden rounded-2xl shadow-sm transition hover:shadow-lg"
             >
               <img
-                src={fileUrl(b.image)}
-                alt={b.title}
+                src={fileUrl(b.bannerImage)}
+                alt={b.bannerName ?? ""}
                 className="aspect-[2/1] w-full object-cover"
               />
-            </a>
+              {b.description && (
+                <p className="bg-white px-3 py-2 text-xs text-gray-600">{b.description}</p>
+              )}
+            </div>
           ))}
         </section>
       )}
@@ -69,15 +71,16 @@ export default function HomePage() {
         <section className="mt-10">
           <h2 className="mb-4 text-lg font-extrabold text-gray-800">Danh mục</h2>
           <div className="flex gap-3 overflow-x-auto pb-2">
-            {/* {categories.content.map((c) => (
+            {categories?.content.map((c) => (
               <Link
-                key={c.categoryId} to={`/products?categoryId=${c.categoryId}`}
-                className="group flex min-w-[120px] flex-col items-center rounded-2xl border border-gray-100 bg-white p-4 transition hover:border-rose-200 hover:shadow-md"
+                key={String(c.categoryId)}
+                to={`/products?categoryId=${c.categoryId}`}
+                className="group flex min-w-[120px] flex-col items-center rounded-2xl border border-gray-100 bg-white p-4"
               >
-                {c.image ? (
+                {c.categoryImage ? (
                   <img
-                    src={fileUrl(c.image)}
-                    alt={c.categoryStatus}
+                    src={fileUrl(c.categoryImage)}
+                    alt={String(c.categoryStatus)}
                     className="h-14 w-14 rounded-full object-cover"
                   />
                 ) : (
@@ -89,23 +92,6 @@ export default function HomePage() {
                   {c.categoryStatus}
                 </span>
               </Link>
-            ))} */}
-            {categories?.content.map((c) => (
-              <Link
-                key={c.categoryId}
-                to={`/products?categoryId=${c.categoryId}`}
-                className="group flex min-w-[120px] flex-col items-center rounded-2xl border border-gray-100 bg-white p-4"
-              >
-                <img
-                  src={fileUrl(c.categoryImage)}
-                  alt={c.categoryStatus}
-                  className="h-14 w-14 rounded-full object-cover"
-                />
-
-                <span>
-                  {c.categoryStatus}
-                </span>
-              </Link>
             ))}
           </div>
         </section>
@@ -114,7 +100,7 @@ export default function HomePage() {
       {/* Featured products */}
       <section className="mt-10">
         <div className="mb-4 flex items-end justify-between">
-          <h2 className="text-lg font-extrabold text-gray-800">Bán chạy nhất</h2>
+          <h2 className="text-lg font-extrabold text-gray-800">Sản phẩm mới</h2>
           <Link
             to="/products"
             className="flex items-center gap-1 text-sm font-semibold text-rose-500 hover:underline"

@@ -5,7 +5,7 @@ import { FullPageSpinner } from "../../components/common/Spinner";
 import Button from "../../components/common/Button";
 import { useAppDispatch } from "../../redux/Store";
 import { showToast } from "../../redux/slices/uiSlice";
-import { fileUrl, formatDate, formatVND, priceAfterDiscount } from "../../utils/format";
+import { formatDate, formatVND, priceAfterDiscount } from "../../utils/format";
 import { orderStatusColor, orderStatusLabel } from "../../utils/status";
 import { paymentMethodColor, paymentMethodIcon, paymentMethodLabel } from "../../utils/payment";
 
@@ -64,38 +64,45 @@ export default function OrderDetailPage() {
       </div>
 
       <div className="space-y-4">
-        {/* Address */}
-        <section className="rounded-2xl border border-gray-100 bg-white p-5">
-          <h3 className="mb-3 text-sm font-bold text-gray-700">Địa chỉ giao</h3>
-          <p className="text-sm">
-            <strong>{order.receiverName}</strong> • {order.receiverPhone}
-          </p>
-          <p className="mt-1 text-sm text-gray-600">{order.shippingAddress}</p>
-          {order.note && (
-            <p className="mt-2 rounded-lg bg-gray-50 p-2 text-xs italic text-gray-500">
-              📝 {order.note}
-            </p>
-          )}
-        </section>
+        {/* Customer info (from OrderGetDTO: fullName, phone, address) */}
+        {(order.fullName || order.phone || order.address) && (
+          <section className="rounded-2xl border border-gray-100 bg-white p-5">
+            <h3 className="mb-3 text-sm font-bold text-gray-700">Thông tin nhận hàng</h3>
+            {order.fullName && (
+              <p className="text-sm">
+                <strong>{order.fullName}</strong>
+                {order.phone && <> • {order.phone}</>}
+              </p>
+            )}
+            {order.address && (
+              <p className="mt-1 text-sm text-gray-600">{order.address}</p>
+            )}
+          </section>
+        )}
 
         {/* Items */}
         <section className="rounded-2xl border border-gray-100 bg-white p-5">
           <h3 className="mb-3 text-sm font-bold text-gray-700">Sản phẩm</h3>
           <div className="space-y-3">
-            {order.orderDetails?.map((d) => (
-              <div key={d.orderDetailId} className="flex gap-3">
-                <img src={fileUrl(d.image)} alt="" className="h-16 w-16 rounded-lg object-cover" />
-                <div className="flex-1">
-                  <p className="text-sm font-semibold text-gray-800">{d.productName}</p>
-                  <p className="text-xs text-gray-500">
-                    Size {d.sizeName} × {d.quantity}
-                  </p>
+            {order.orderDetails?.map((d, i) => {
+              const discount = d.discountApplied ?? 0;
+              return (
+                <div key={i} className="flex items-center gap-3">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100 text-xl">
+                    🍽️
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold text-gray-800">{d.productName}</p>
+                    <p className="text-xs text-gray-500">
+                      {d.sizeName ? `Size ${d.sizeName} × ` : ""}{d.quantity}
+                    </p>
+                  </div>
+                  <span className="text-sm font-bold text-gray-700">
+                    {formatVND(priceAfterDiscount(d.price, discount) * d.quantity)}
+                  </span>
                 </div>
-                <span className="text-sm font-bold text-gray-700">
-                  {formatVND(priceAfterDiscount(d.price, d.discount) * d.quantity)}
-                </span>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
 
@@ -103,20 +110,18 @@ export default function OrderDetailPage() {
         <section className="rounded-2xl border border-gray-100 bg-white p-5">
           <h3 className="mb-3 text-sm font-bold text-gray-700">Tổng tiền</h3>
           <div className="space-y-2 text-sm">
-            <div className="flex justify-between text-gray-600">
-              <span>Tạm tính</span>
-              <span>{formatVND(order.originalAmount)}</span>
-            </div>
-            {order.discountAmount > 0 && (
+            {order.originalAmount != null && (
+              <div className="flex justify-between text-gray-600">
+                <span>Tạm tính</span>
+                <span>{formatVND(order.originalAmount)}</span>
+              </div>
+            )}
+            {order.discountAmount != null && order.discountAmount > 0 && (
               <div className="flex justify-between text-emerald-600">
-                <span>Giảm giá {order.voucherCode && `(${order.voucherCode})`}</span>
+                <span>Giảm giá</span>
                 <span>-{formatVND(order.discountAmount)}</span>
               </div>
             )}
-            <div className="flex justify-between text-gray-600">
-              <span>Phí giao hàng</span>
-              <span>{order.shippingFee === 0 ? "Miễn phí" : formatVND(order.shippingFee)}</span>
-            </div>
             <div className="my-3 border-t border-dashed border-gray-200" />
             <div className="flex items-baseline justify-between text-base font-bold">
               <span>Tổng cộng</span>

@@ -10,6 +10,7 @@ import Button from "../../components/common/Button";
 import { useAppDispatch } from "../../redux/Store";
 import { showToast } from "../../redux/slices/uiSlice";
 import { formatDate } from "../../utils/format";
+import type { NotificationType } from "../../types/backend";
 
 export default function NotificationsPage() {
   const { data, isLoading } = useAdminListNotificationsQuery();
@@ -20,7 +21,7 @@ export default function NotificationsPage() {
     title: "",
     description: "",
     redirectUrl: "",
-    notificationType: "ALL" as "ALL" | "USER",
+    notificationType: "ALL" as NotificationType,
   });
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -50,7 +51,7 @@ export default function NotificationsPage() {
                 <div className="flex items-center gap-2">
                   <p className="font-semibold text-gray-800">{n.title}</p>
                   <span className="rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-bold text-gray-600">
-                    {n.notificationType}
+                    {n.type}
                   </span>
                 </div>
                 <p className="mt-1 text-sm text-gray-600">{n.description}</p>
@@ -92,14 +93,15 @@ export default function NotificationsPage() {
             placeholder="/promotion/june"
           />
           <label className="block">
-            <span className="mb-1 block text-sm font-medium text-gray-700">Gửi cho</span>
+            <span className="mb-1 block text-sm font-medium text-gray-700">Loại thông báo</span>
             <select
               value={form.notificationType}
-              onChange={(e) => setForm({ ...form, notificationType: e.target.value as "ALL" | "USER" })}
+              onChange={(e) => setForm({ ...form, notificationType: e.target.value as NotificationType })}
               className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm"
             >
-              <option value="ALL">Tất cả người dùng</option>
-              <option value="USER">Theo nhóm USER</option>
+              <option value="ALL">Tất cả người dùng (ALL)</option>
+              <option value="PUBLIC">Công khai (PUBLIC)</option>
+              <option value="PRIVATE">Riêng tư (PRIVATE)</option>
             </select>
           </label>
           <Button type="submit" full loading={sending} icon={<Send size={14} />}>

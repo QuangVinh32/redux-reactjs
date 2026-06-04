@@ -9,7 +9,13 @@ import Empty from "../../components/common/Empty";
 import Button from "../../components/common/Button";
 import { useAppDispatch } from "../../redux/Store";
 import { showToast } from "../../redux/slices/uiSlice";
-import { fileUrl, formatVND, priceAfterDiscount } from "../../utils/format";
+import {
+  cartItemImageUrl,
+  cartItemProductName,
+  cartItemSizeName,
+  cartItemUnitPrice,
+  formatVND,
+} from "../../utils/format";
 import type { PaymentMethod } from "../../types/backend";
 
 export default function CheckoutPage() {
@@ -27,10 +33,9 @@ export default function CheckoutPage() {
   const [note, setNote] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("COD");
 
-  // pick default address once loaded
   if (addresses && addresses.length > 0 && addressId === null) {
-    const def = addresses.find((a) => a.default) ?? addresses[0];
-    setAddressId(def.shippingAddressId);
+    const def = addresses.find((a) => a.isDefault) ?? addresses[0];
+    setAddressId(def.id);
   }
 
   if (isLoading) return <FullPageSpinner />;
@@ -105,9 +110,9 @@ export default function CheckoutPage() {
               <div className="space-y-2">
                 {addresses.map((a) => (
                   <label
-                    key={a.shippingAddressId}
+                    key={a.id}
                     className={`flex cursor-pointer items-start gap-3 rounded-xl border p-3 transition ${
-                      addressId === a.shippingAddressId
+                      addressId === a.id
                         ? "border-rose-500 bg-rose-50"
                         : "border-gray-200 hover:border-gray-300"
                     }`}
@@ -115,14 +120,14 @@ export default function CheckoutPage() {
                     <input
                       type="radio"
                       name="address"
-                      checked={addressId === a.shippingAddressId}
-                      onChange={() => setAddressId(a.shippingAddressId)}
+                      checked={addressId === a.id}
+                      onChange={() => setAddressId(a.id)}
                       className="mt-1 accent-rose-500"
                     />
                     <div className="flex-1">
                       <p className="text-sm font-semibold text-gray-800">
                         {a.receiverName} • {a.receiverPhone}
-                        {a.default && (
+                        {a.isDefault && (
                           <span className="ml-2 rounded bg-rose-100 px-1.5 py-0.5 text-[10px] font-bold text-rose-600">
                             Mặc định
                           </span>
@@ -144,19 +149,19 @@ export default function CheckoutPage() {
               Sản phẩm ({items.length})
             </h2>
             <div className="space-y-3">
-              {items.map((item) => (
-                <div key={item.cartDetailId} className="flex gap-3">
-                  <img src={fileUrl(item.image)} alt="" className="h-14 w-14 rounded-lg object-cover" />
+              {items.map((item, i) => (
+                <div key={i} className="flex gap-3">
+                  <img src={cartItemImageUrl(item)} alt="" className="h-14 w-14 rounded-lg object-cover" />
                   <div className="flex-1 min-w-0">
                     <p className="line-clamp-1 text-sm font-semibold text-gray-800">
-                      {item.productName}
+                      {cartItemProductName(item)}
                     </p>
                     <p className="text-xs text-gray-500">
-                      Size {item.sizeName} × {item.quantity}
+                      Size {cartItemSizeName(item)} × {item.quantity}
                     </p>
                   </div>
                   <span className="text-sm font-bold text-gray-700">
-                    {formatVND(priceAfterDiscount(item.price, item.discount) * item.quantity)}
+                    {formatVND(cartItemUnitPrice(item) * item.quantity)}
                   </span>
                 </div>
               ))}

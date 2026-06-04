@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Heart, Minus, Plus, ShoppingCart, Star } from "lucide-react";
 import {
   useGetProductUserQuery,
-  useListReviewsByProductQuery,
+  useGetSizesByProductQuery,
   useCreateReviewMutation,
 } from "../../api/catalogApi";
 import {
@@ -16,7 +16,6 @@ import Button from "../../components/common/Button";
 import { useAppDispatch, useAppSelector } from "../../redux/Store";
 import { showToast } from "../../redux/slices/uiSlice";
 import { fileUrl, formatDate, formatVND, priceAfterDiscount } from "../../utils/format";
-// import { console } from "inspector/promises";
 
 export default function ProductDetailPage() {
   const { id } = useParams();
@@ -26,7 +25,8 @@ export default function ProductDetailPage() {
   const dispatch = useAppDispatch();
 
   const { data: product, isLoading } = useGetProductUserQuery(productId);
-  const { data: reviews } = useListReviewsByProductQuery(productId);
+  // ProductForUser.sizes doesn't include productSizeId — fetch full sizes from this endpoint
+  const { data: sizes } = useGetSizesByProductQuery(productId);
   const { data: isFav } = useCheckFavouriteQuery(productId, { skip: !user });
   const [toggleFav] = useToggleFavouriteMutation();
   const [addToCart, { isLoading: adding }] = useAddToCartMutation();
@@ -40,10 +40,14 @@ export default function ProductDetailPage() {
 
   if (isLoading || !product) return <FullPageSpinner />;
 
-  const size = product.productSizes?.[sizeIdx];
-  console.log({ size });
-  const price = size ? priceAfterDiscount(size.price, size.discount) : 0;
-  console.log({ price });
+  const reviews = product.reviews ?? [];
+  const avgRating = reviews.length
+    ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length
+    : null;
+
+  const size = sizes?.[sizeIdx];
+  const price = size ? priceAfterDiscount(size.price, size.discount ?? 0) : 0;
+
   const onAdd = async () => {
     if (!user) {
       dispatch(showToast({ message: "Vui lòng đăng nhập", kind: "error" }));
@@ -53,7 +57,7 @@ export default function ProductDetailPage() {
     if (!size) return;
     try {
       await addToCart({
-        productId: product.productId,
+        productId,
         productSizeId: size.productSizeId,
         quantity: qty,
       }).unwrap();
@@ -94,7 +98,7 @@ export default function ProductDetailPage() {
           <div className="aspect-square overflow-hidden rounded-2xl bg-white">
             {product.productImages?.[activeImg] && (
               <img
-                src={fileUrl(product.productImages[activeImg].image)}
+                src={fileUrl(product.productImages[activeImg])}
                 alt={product.productName}
                 className="h-full w-full object-cover"
               />
@@ -102,13 +106,13 @@ export default function ProductDetailPage() {
           </div>
           {product.productImages?.length > 1 && (
             <div className="mt-3 flex gap-2 overflow-x-auto">
-              {product.productImages.map((img, i) => (
+              {product.productImages.map((url, i) => (
                 <button
-                  key={img.productImageId}
+                  key={i}
                   onClick={() => setActiveImg(i)}
                   className={`h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg border-2 ${i === activeImg ? "border-rose-500" : "border-transparent"}`}
                 >
-                  <img src={fileUrl(img.image)} alt="" className="h-full w-full object-cover" />
+                  <img src={fileUrl(url)} alt="" className="h-full w-full object-cover" />
                 </button>
               ))}
             </div>
@@ -118,7 +122,7 @@ export default function ProductDetailPage() {
         {/* Info */}
         <div>
           <p className="text-xs font-semibold uppercase text-rose-500">
-            {product.categoryStatus ?? "Sản phẩm"}
+            {String(product.categoryStatus ?? "Sản phẩm")}
           </p>
           <h1 className="mt-1 text-3xl font-extrabold text-gray-800">
             {product.productName}
@@ -126,18 +130,17 @@ export default function ProductDetailPage() {
           <div className="mt-2 flex items-center gap-2 text-sm">
             <span className="flex items-center gap-1 text-amber-500">
               <Star size={14} fill="currentColor" />
-              {product.averageRating?.toFixed(1) ?? "—"}
+              {avgRating != null ? avgRating.toFixed(1) : "—"}
             </span>
             <span className="text-gray-400">•</span>
-            <span className="text-gray-500">{reviews?.length ?? 0} đánh giá</span>
- 
+            <span className="text-gray-500">{reviews.length} đánh giá</span>
           </div>
 
           <div className="mt-4 flex items-baseline gap-3">
             <span className="text-3xl font-extrabold text-rose-500">
               {formatVND(price)}
             </span>
-            {size && size.discount > 0 && (
+            {size && (size.discount ?? 0) > 0 && (
               <>
                 <span className="text-lg text-gray-400 line-through">{formatVND(size.price)}</span>
                 <span className="rounded-full bg-rose-100 px-2 py-0.5 text-xs font-bold text-rose-600">
@@ -154,11 +157,11 @@ export default function ProductDetailPage() {
           )}
 
           {/* Size selector */}
-          {product.productSizes?.length > 0 && (
+          {sizes && sizes.length > 0 && (
             <div className="mt-6">
               <p className="mb-2 text-sm font-semibold text-gray-700">Kích cỡ</p>
               <div className="flex flex-wrap gap-2">
-                {product.productSizes.map((s, i) => (
+                {sizes.map((s, i) => (
                   <button
                     key={s.productSizeId}
                     onClick={() => setSizeIdx(i)}
@@ -228,7 +231,7 @@ export default function ProductDetailPage() {
       {/* Reviews */}
       <section className="mt-12">
         <h2 className="mb-4 text-lg font-extrabold text-gray-800">
-          Đánh giá ({reviews?.length ?? 0})
+          Đánh giá ({reviews.length})
         </h2>
         {user && (
           <form
@@ -264,26 +267,28 @@ export default function ProductDetailPage() {
         )}
 
         <div className="space-y-3">
-          {reviews?.map((r) => (
-            <div key={r.reviewId} className="rounded-xl border border-gray-100 bg-white p-4">
+          {reviews.map((r, i) => (
+            <div key={i} className="rounded-xl border border-gray-100 bg-white p-4">
               <div className="flex items-center gap-3">
                 <div className="h-9 w-9 overflow-hidden rounded-full bg-rose-100">
-                  {r.userImage && <img src={r.userImage} alt="" className="h-full w-full object-cover" />}
+                  {r.userDTO?.image && (
+                    <img src={r.userDTO.image} alt="" className="h-full w-full object-cover" />
+                  )}
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-gray-800">{r.userFullName}</p>
+                  <p className="text-sm font-semibold text-gray-800">{r.userDTO?.fullName ?? "Ẩn danh"}</p>
                   <p className="text-xs text-gray-400">{formatDate(r.createdAt)}</p>
                 </div>
                 <div className="ml-auto flex items-center text-amber-500">
-                  {Array.from({ length: r.rating }).map((_, i) => (
-                    <Star key={i} size={14} fill="currentColor" />
+                  {Array.from({ length: r.rating }).map((_, idx) => (
+                    <Star key={idx} size={14} fill="currentColor" />
                   ))}
                 </div>
               </div>
               <p className="mt-2 text-sm text-gray-600">{r.reviewText}</p>
             </div>
           ))}
-          {(!reviews || reviews.length === 0) && (
+          {reviews.length === 0 && (
             <p className="text-center text-sm text-gray-500">Chưa có đánh giá nào</p>
           )}
         </div>

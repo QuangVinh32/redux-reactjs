@@ -24,29 +24,34 @@ export default function BannersPage() {
 
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Banner | null>(null);
-  const [title, setTitle] = useState("");
-  const [url, setUrl] = useState("");
+  const [bannerName, setBannerName] = useState("");
+  const [description, setDescription] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
 
   const startNew = () => {
     setEditing(null);
-    setTitle(""); setUrl(""); setImage(null); setPreview(null);
+    setBannerName("");
+    setDescription("");
+    setImage(null);
+    setPreview(null);
     setOpen(true);
   };
   const startEdit = (b: Banner) => {
     setEditing(b);
-    setTitle(b.title); setUrl(b.redirectUrl ?? "");
-    setImage(null); setPreview(fileUrl(b.image));
+    setBannerName(b.bannerName ?? "");
+    setDescription(b.description ?? "");
+    setImage(null);
+    setPreview(b.bannerImage ? fileUrl(b.bannerImage) : null);
     setOpen(true);
   };
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const fd = new FormData();
-    fd.append("title", title);
-    fd.append("redirectUrl", url);
-    if (image) fd.append("image", image);
+    fd.append("bannerName", bannerName);
+    fd.append("description", description);
+    if (image) fd.append("bannerImage", image);
     try {
       if (editing) await update({ id: editing.bannerId, body: fd }).unwrap();
       else await create(fd).unwrap();
@@ -58,7 +63,7 @@ export default function BannersPage() {
   };
 
   const onDelete = async (b: Banner) => {
-    if (!confirm(`Xóa banner "${b.title}"?`)) return;
+    if (!confirm(`Xóa banner "${b.bannerName ?? b.bannerId}"?`)) return;
     try {
       await del(b.bannerId).unwrap();
       dispatch(showToast({ message: "Đã xóa", kind: "success" }));
@@ -79,11 +84,11 @@ export default function BannersPage() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {data?.content.map((b) => (
           <div key={b.bannerId} className="overflow-hidden rounded-2xl bg-white shadow-sm">
-            <img src={fileUrl(b.image)} alt="" className="aspect-[2/1] w-full object-cover" />
+            <img src={fileUrl(b.bannerImage)} alt="" className="aspect-[2/1] w-full object-cover" />
             <div className="p-3">
-              <p className="line-clamp-1 font-bold text-gray-800">{b.title}</p>
-              {b.redirectUrl && (
-                <p className="mt-1 line-clamp-1 text-xs text-blue-500">{b.redirectUrl}</p>
+              <p className="line-clamp-1 font-bold text-gray-800">{b.bannerName}</p>
+              {b.description && (
+                <p className="mt-1 line-clamp-1 text-xs text-gray-500">{b.description}</p>
               )}
               <div className="mt-2 flex justify-end gap-1">
                 <button onClick={() => startEdit(b)} className="rounded p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700">
@@ -124,8 +129,13 @@ export default function BannersPage() {
               />
             </label>
           </label>
-          <Input label="Tiêu đề" value={title} onChange={(e) => setTitle(e.target.value)} required />
-          <Input label="Link redirect" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="/promotion/june" />
+          <Input label="Tên banner" value={bannerName} onChange={(e) => setBannerName(e.target.value)} required />
+          <Input
+            label="Mô tả"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Ưu đãi 25% mỗi cuối tuần..."
+          />
           <div className="flex justify-end gap-2 pt-3">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>Hủy</Button>
             <Button type="submit" loading={creating || updating}>

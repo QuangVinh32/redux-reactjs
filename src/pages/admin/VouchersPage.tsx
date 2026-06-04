@@ -13,7 +13,7 @@ import Button from "../../components/common/Button";
 import { useAppDispatch } from "../../redux/Store";
 import { showToast } from "../../redux/slices/uiSlice";
 import { formatDate, formatVND } from "../../utils/format";
-import type { Voucher } from "../../types/backend";
+import type { DiscountType, Voucher, VoucherStatus, VoucherTarget } from "../../types/backend";
 
 const empty: Partial<Voucher> = {
   code: "",
@@ -95,7 +95,9 @@ export default function VouchersPage() {
           >
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-xs font-semibold opacity-80">{v.discountType === "PERCENT" ? "% Giảm" : "Giảm tiền"}</p>
+                <p className="text-xs font-semibold opacity-80">
+                  {v.discountType === "PERCENT" ? "% Giảm" : "Giảm tiền cố định"}
+                </p>
                 <p className="mt-1 text-3xl font-extrabold">
                   {v.discountType === "PERCENT" ? `${v.discountValue}%` : formatVND(v.discountValue)}
                 </p>
@@ -117,8 +119,11 @@ export default function VouchersPage() {
               </span>
               <span>HSD: {v.endDate ? formatDate(v.endDate) : "—"}</span>
             </div>
-            <div className="mt-1 text-[10px] opacity-80">
-              Đơn tối thiểu: {formatVND(v.minOrderValue ?? 0)}
+            <div className="mt-1 flex items-center justify-between text-[10px] opacity-80">
+              <span>Đơn tối thiểu: {formatVND(v.minOrderValue ?? 0)}</span>
+              <span className="rounded-full bg-white/20 px-2 py-0.5 font-bold uppercase">
+                {v.status}
+              </span>
             </div>
           </div>
         ))}
@@ -142,11 +147,11 @@ export default function VouchersPage() {
               <span className="mb-1 block text-sm font-medium text-gray-700">Loại</span>
               <select
                 value={form.discountType}
-                onChange={(e) => setForm({ ...form, discountType: e.target.value as "PERCENT" | "AMOUNT" })}
+                onChange={(e) => setForm({ ...form, discountType: e.target.value as DiscountType })}
                 className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm"
               >
                 <option value="PERCENT">% Phần trăm</option>
-                <option value="AMOUNT">Số tiền (₫)</option>
+                <option value="FIXED">Giảm tiền cố định (₫)</option>
               </select>
             </label>
           </div>
@@ -179,7 +184,7 @@ export default function VouchersPage() {
             />
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-3 sm:grid-cols-3">
             <Input
               label="Tổng lượt dùng"
               type="number"
@@ -192,7 +197,34 @@ export default function VouchersPage() {
               value={form.usageLimitPerUser ?? 0}
               onChange={(e) => setForm({ ...form, usageLimitPerUser: Number(e.target.value) })}
             />
+            <label className="block">
+              <span className="mb-1 block text-sm font-medium text-gray-700">Trạng thái</span>
+              <select
+                value={form.status}
+                onChange={(e) => setForm({ ...form, status: e.target.value as VoucherStatus })}
+                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm"
+              >
+                <option value="DRAFT">Bản nháp (DRAFT)</option>
+                <option value="ACTIVE">Đang hoạt động (ACTIVE)</option>
+                <option value="EXPIRED">Hết hạn (EXPIRED)</option>
+                <option value="DISABLED">Tắt (DISABLED)</option>
+              </select>
+            </label>
           </div>
+
+          <label className="block">
+            <span className="mb-1 block text-sm font-medium text-gray-700">Đối tượng áp dụng</span>
+            <select
+              value={form.target}
+              onChange={(e) => setForm({ ...form, target: e.target.value as VoucherTarget })}
+              className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm"
+            >
+              <option value="ALL">Tất cả (ALL)</option>
+              <option value="USER">User được gán (USER)</option>
+              <option value="NEW_USER">User mới (NEW_USER)</option>
+              <option value="VIP">User VIP (VIP)</option>
+            </select>
+          </label>
 
           <div className="grid gap-3 sm:grid-cols-2">
             <Input

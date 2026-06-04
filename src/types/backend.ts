@@ -1,4 +1,5 @@
-// Mirror of shopfood_V2 backend DTOs
+// Mirror of shopfood_V2 backend DTOs (com.example.shopfood)
+// All field names match the backend response exactly.
 
 export type Role = "USER" | "MANAGER" | "ADMIN";
 
@@ -12,27 +13,32 @@ export type Page<T> = {
   last: boolean;
 };
 
+// ============ Auth ============
 export type LoginRequest = { username: string; password: string };
 
+// LoginDTO: userId, fullName, username, image, phone, address, email, role, userAgent, token, refreshToken
 export type LoginResponse = {
   userId: number;
-  username: string;
   fullName: string;
+  username: string;
+  image?: string;
+  phone?: string;
+  address?: string;
   email: string;
-  phone: string;
-  address: string;
   role: Role;
-  image: string;
+  userAgent?: string;
   token: string;
   refreshToken: string;
 };
 
+// TokenPairDTO
 export type TokenPair = {
   accessToken: string;
   refreshToken: string;
   expiresInMs: number;
 };
 
+// UserForAdmin DTO (used by /me, get-all, {id})
 export type User = {
   userId: number;
   username: string;
@@ -44,13 +50,20 @@ export type User = {
   address?: string;
 };
 
+// ============ Category ============
+// CategoryStatus enum: CAFFE, SODA, TEA
+export type CategoryStatus = "CAFFE" | "SODA" | "TEA";
+
+// CategoryDTO: only categoryId, categoryStatus, categoryImage (no description!)
+// Note: in /get-all, categoryId comes as String (per controller code); in single GET, as Integer.
 export type Category = {
-  categoryId: number;
-  categoryStatus: string;
+  categoryId: number | string;
+  categoryStatus: CategoryStatus | string;
   categoryImage?: string;
-  description?: string;
 };
 
+// ============ Product ============
+// ProductSize entity (returned by /api/product_sizes/*)
 export type ProductSize = {
   productSizeId: number;
   sizeName: string;
@@ -59,89 +72,109 @@ export type ProductSize = {
   quantity: number;
 };
 
-export type ProductImage = { productImageId: number};
-
-export type Product = {
-  productId: number;
-  productName: string;
-  description?: string;
-  categoryId: number;
-  categoryStatus?: string;
-  productImages: ProductImage[];
-  productSizes: ProductSize[];
-  averageRating?: number;
-};
-
-export type Banner = {
-  bannerId: number;
-  title: string;
-  image: string;
-  redirectUrl?: string;
-};
-
-export type CartDetail = {
-  cartDetailId: number;
-  productId: number;
-  productName: string;
-  image: string;
-  sizeId: number;
+// ProductSizeDTO nested inside ProductForUser.sizes (NO productSizeId!)
+export type ProductSizeNested = {
   sizeName: string;
   price: number;
   discount: number;
   quantity: number;
-  subTotal: number;
 };
 
+// ProductForAdmin DTO — used by /get-all (list) and /admin/{id}
+export type ProductSummary = {
+  productId: number;
+  productName: string;
+  productImages: string[]; // backend returns array of URL strings
+  categoryId: number;
+  categoryStatus?: CategoryStatus | string;
+  categoryImage?: string;
+};
+
+// ProductForUser DTO — used by /user/{id} (single product detail)
+// NOTE: no productId — caller knows it from the URL
+export type ProductDetail = {
+  productName: string;
+  description?: string;
+  productImages: string[]; // URL strings
+  sizes: ProductSizeNested[]; // no productSizeId here — call /product_sizes/product/{id} for that
+  reviews: Review[];
+  categoryId?: number;
+  categoryImage?: string;
+  categoryStatus?: CategoryStatus | string;
+};
+
+// ============ Banner ============
+// BannerDTO: bannerId, bannerName, bannerImage, description (no title/redirectUrl)
+export type Banner = {
+  bannerId: number;
+  bannerName?: string;
+  bannerImage?: string;
+  description?: string;
+};
+
+// ============ Cart ============
+// /api/carts/items returns List<CartDetail> — full entity with nested Product + ProductSize
+export type CartItem = {
+  product: {
+    productId: number;
+    productName: string;
+    description?: string;
+    productImages?: { productImageId: number; productImageName?: string }[];
+  };
+  productSize: ProductSize; // has productSizeId
+  quantity: number;
+};
+
+// ============ Shipping ============
+// ShippingAddress entity — primary key is `id`, default flag is `isDefault`
 export type ShippingAddress = {
-  shippingAddressId: number;
+  id: number;
   receiverName: string;
   receiverPhone: string;
   addressLine: string;
-  ward: string;
-  district: string;
-  province: string;
-  default: boolean;
+  ward?: string;
+  district?: string;
+  province?: string;
+  isDefault: boolean;
 };
 
+// ============ Order ============
+// OrderStatus enum: PENDING, CONFIRMED, SHIPPING, COMPLETED, CANCELED (no DELIVERED, no RETURNED)
 export type OrderStatus =
   | "PENDING"
   | "CONFIRMED"
   | "SHIPPING"
-  | "DELIVERED"
   | "COMPLETED"
-  | "CANCELED"
-  | "RETURNED";
+  | "CANCELED";
 
 export type PaymentMethod = "COD" | "MOMO";
 
+// OrderDetailDTO: productName, productSizeId, sizeName, quantity, price (Double), discountApplied (Integer)
 export type OrderDetail = {
-  orderDetailId: number;
-  productId: number;
   productName: string;
-  image: string;
-  sizeId: number;
-  sizeName: string;
-  price: number;
-  discount: number;
+  productSizeId?: number;
+  sizeName?: string;
   quantity: number;
+  price: number;
+  discountApplied?: number;
 };
 
+// OrderGetDTO — used by /me (list), /admin/orders (list)
+// OrderDTO — used by /{id} (single) and updateOrder, with only orderId/totalAmount/status/createdAt/fullName/orderDetails
+// FE unifies both — fields beyond the intersection are optional.
 export type Order = {
   orderId: number;
-  userId: number;
-  fullName: string;
-  receiverName?: string;
-  receiverPhone?: string;
-  shippingAddress?: string;
-  shippingFee: number;
-  note?: string;
-  originalAmount: number;
-  discountAmount: number;
   totalAmount: number;
   status: OrderStatus;
-  paymentMethod?: PaymentMethod;
-  voucherCode?: string;
   createdAt: string;
+  fullName?: string;
+  // present only on OrderGetDTO (/me, /admin/orders):
+  originalAmount?: number;
+  discountAmount?: number;
+  phone?: string;
+  address?: string;
+  // not in any DTO yet — may appear if backend later exposes paymentMethod field from Order entity
+  paymentMethod?: PaymentMethod;
   orderDetails: OrderDetail[];
 };
 
@@ -151,54 +184,88 @@ export type CheckoutResponse = {
   nextStep: string;
 };
 
-export type VoucherType = "PERCENT" | "AMOUNT";
-export type VoucherTarget = "ALL" | "USER";
-export type VoucherStatus = "ACTIVE" | "INACTIVE";
+// ============ Voucher ============
+// DiscountType enum: FIXED, PERCENT
+export type DiscountType = "FIXED" | "PERCENT";
 
+// VoucherTarget enum: ALL, USER, NEW_USER, VIP
+export type VoucherTarget = "ALL" | "USER" | "NEW_USER" | "VIP";
+
+// VoucherStatus enum: DRAFT, ACTIVE, EXPIRED, DISABLED
+export type VoucherStatus = "DRAFT" | "ACTIVE" | "EXPIRED" | "DISABLED";
+
+// VoucherScope enum: ORDER (default)
+export type VoucherScope = "ORDER" | "SHIPPING";
+
+// Voucher entity (returned directly by VoucherController, not wrapped in DTO)
 export type Voucher = {
   voucherId: number;
   code: string;
   description?: string;
-  discountType: VoucherType;
+  discountType: DiscountType;
   discountValue: number;
   maxDiscount?: number;
   minOrderValue?: number;
+  scope?: VoucherScope;
+  target: VoucherTarget;
   usageLimitGlobal?: number;
   usageLimitPerUser?: number;
   usedCount: number;
-  target: VoucherTarget;
   status: VoucherStatus;
   startDate: string;
   endDate: string;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
+// ============ Notification ============
+// NotificationType enum: ALL, PRIVATE, PUBLIC
+export type NotificationType = "ALL" | "PRIVATE" | "PUBLIC";
+export type NotificationStatusValue = "READ" | "UNREAD";
+
+// NotificationDTO: notificationId, title, description, type (String!), status (String), redirectUrl, createdAt
 export type Notification = {
   notificationId: number;
   title: string;
   description: string;
+  type: NotificationType; // ← BE uses `type`, NOT `notificationType`
+  status: NotificationStatusValue;
   redirectUrl?: string;
-  notificationType: "ALL" | "USER";
-  status: "READ" | "UNREAD";
   createdAt: string;
 };
 
+// NotificationRequest (for admin POST) uses `notificationType`
+export type NotificationRequestBody = {
+  notificationType: NotificationType;
+  title: string;
+  description: string;
+  redirectUrl?: string;
+  userId?: number;
+};
+
+// ============ Review ============
+// UserDTO embedded inside ReviewDTO
+export type ReviewUser = {
+  fullName: string;
+  image?: string;
+};
+
+// ReviewDTO: rating, reviewText, createdAt, userDTO
 export type Review = {
-  reviewId: number;
-  productId: number;
-  userId: number;
-  userFullName: string;
-  userImage?: string;
   rating: number;
   reviewText: string;
   createdAt: string;
+  userDTO?: ReviewUser;
 };
 
+// ============ Misc ============
 export type Revenue = {
   originalRevenue: number;
   totalDiscount: number;
   netRevenue: number;
 };
 
+// VoucherApplyResult DTO
 export type ApplyVoucherResult = {
   originalAmount: number;
   discountAmount: number;

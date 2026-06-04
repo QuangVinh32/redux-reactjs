@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
-import type { Product } from "../../types/backend";
+import type { ProductSummary } from "../../types/backend";
+import { fileUrl } from "../../utils/format";
 
-export default function ProductCard({ product }: { product: Product }) {
+export default function ProductCard({ product }: { product: ProductSummary }) {
   const rawImg = product.productImages?.[0];
 
   return (
@@ -12,7 +13,7 @@ export default function ProductCard({ product }: { product: Product }) {
       <div className="aspect-square overflow-hidden bg-gray-50">
         {rawImg ? (
           <img
-            src={String(rawImg)}
+            src={fileUrl(rawImg)}
             alt={product.productName}
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
             loading="lazy"

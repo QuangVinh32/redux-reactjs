@@ -2,7 +2,8 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithReauth } from "./baseQuery";
 import type {
   Notification,
-  Product,
+  NotificationRequestBody,
+  ProductSummary,
   ShippingAddress,
   User,
   Voucher,
@@ -18,13 +19,13 @@ export const miscApi = createApi({
       query: () => "/api/shipping-addresses",
       providesTags: ["ShippingAddress"],
     }),
-    createAddress: b.mutation<ShippingAddress, Omit<ShippingAddress, "shippingAddressId">>({
+    createAddress: b.mutation<ShippingAddress, Omit<ShippingAddress, "id">>({
       query: (body) => ({ url: "/api/shipping-addresses", method: "POST", body }),
       invalidatesTags: ["ShippingAddress"],
     }),
     updateAddress: b.mutation<
       ShippingAddress,
-      { id: number; body: Omit<ShippingAddress, "shippingAddressId"> }
+      { id: number; body: Omit<ShippingAddress, "id"> }
     >({
       query: ({ id, body }) => ({
         url: `/api/shipping-addresses/${id}`,
@@ -62,8 +63,12 @@ export const miscApi = createApi({
       }),
       invalidatesTags: [{ type: "Voucher", id: "ADMIN_LIST" }],
     }),
-    deleteVoucher: b.mutation<void, number>({
-      query: (id) => ({ url: `/api/v1/vouchers/${id}`, method: "DELETE" }),
+    deleteVoucher: b.mutation<string, number>({
+      query: (id) => ({
+        url: `/api/v1/vouchers/${id}`,
+        method: "DELETE",
+        responseHandler: (r) => r.text(),
+      }),
       invalidatesTags: [{ type: "Voucher", id: "ADMIN_LIST" }],
     }),
 
@@ -72,32 +77,43 @@ export const miscApi = createApi({
       query: () => "/api/notifications",
       providesTags: ["Notification"],
     }),
-    markRead: b.mutation<void, number>({
+    markRead: b.mutation<Notification, number>({
       query: (id) => ({ url: `/api/notifications/${id}/read`, method: "PUT" }),
       invalidatesTags: ["Notification"],
     }),
-    markAllRead: b.mutation<void, void>({
-      query: () => ({ url: "/api/notifications/read-all", method: "PUT" }),
+    markAllRead: b.mutation<string, void>({
+      query: () => ({
+        url: "/api/notifications/read-all",
+        method: "PUT",
+        responseHandler: (r) => r.text(),
+      }),
       invalidatesTags: ["Notification"],
     }),
-    deleteNotification: b.mutation<void, number>({
-      query: (id) => ({ url: `/api/notifications/${id}`, method: "DELETE" }),
+    deleteNotification: b.mutation<string, number>({
+      query: (id) => ({
+        url: `/api/notifications/${id}`,
+        method: "DELETE",
+        responseHandler: (r) => r.text(),
+      }),
       invalidatesTags: ["Notification"],
     }),
     adminListNotifications: b.query<Notification[], void>({
       query: () => "/api/notifications/admin",
       providesTags: ["Notification"],
     }),
-    createMassNotification: b.mutation<
-      Notification,
-      { title: string; description: string; redirectUrl?: string; notificationType: "ALL" | "USER" }
-    >({
-      query: (body) => ({ url: "/api/notifications", method: "POST", body }),
+    createMassNotification: b.mutation<string, NotificationRequestBody>({
+      query: (body) => ({
+        url: "/api/notifications",
+        method: "POST",
+        body,
+        responseHandler: (r) => r.text(),
+      }),
       invalidatesTags: ["Notification"],
     }),
 
     // ===== Favourite =====
-    listFavourites: b.query<Product[], void>({
+    // /api/favourites returns List<Product> (full Product entity per FavouriteService)
+    listFavourites: b.query<ProductSummary[], void>({
       query: () => "/api/favourites",
       providesTags: ["Favourite"],
     }),
@@ -122,12 +138,16 @@ export const miscApi = createApi({
       query: (id) => `/api/v1/users/${id}`,
       providesTags: (_r, _e, id) => [{ type: "User", id }],
     }),
-    createUser: b.mutation<User, FormData>({
+    createUser: b.mutation<void, FormData>({
       query: (body) => ({ url: "/api/v1/users/create", method: "POST", body }),
       invalidatesTags: ["User"],
     }),
-    deleteUser: b.mutation<void, number>({
-      query: (id) => ({ url: `/api/v1/users/${id}`, method: "DELETE" }),
+    deleteUser: b.mutation<string, number>({
+      query: (id) => ({
+        url: `/api/v1/users/${id}`,
+        method: "DELETE",
+        responseHandler: (r) => r.text(),
+      }),
       invalidatesTags: ["User"],
     }),
 

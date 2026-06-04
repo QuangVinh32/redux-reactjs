@@ -4,7 +4,7 @@ import { useMyOrdersQuery } from "../../api/orderApi";
 import { FullPageSpinner } from "../../components/common/Spinner";
 import Empty from "../../components/common/Empty";
 import Pagination from "../../components/common/Pagination";
-import { fileUrl, formatDate, formatVND } from "../../utils/format";
+import { formatDate, formatVND } from "../../utils/format";
 import { orderStatusColor, orderStatusLabel } from "../../utils/status";
 import { paymentMethodIcon, paymentMethodShortLabel } from "../../utils/payment";
 
@@ -57,19 +57,15 @@ export default function OrderListPage() {
                 </span>
               </div>
             </div>
-            <div className="mt-3 flex gap-2 overflow-x-auto">
-              {o.orderDetails?.slice(0, 4).map((d) => (
-                <img
-                  key={d.orderDetailId}
-                  src={fileUrl(d.image)}
-                  alt=""
-                  className="h-12 w-12 flex-shrink-0 rounded-lg object-cover"
-                />
+            <div className="mt-3 text-xs text-gray-600">
+              {o.orderDetails?.slice(0, 3).map((d, i) => (
+                <span key={i} className="mr-2">
+                  {d.productName}{d.sizeName ? ` (${d.sizeName})` : ""} × {d.quantity}
+                  {i < Math.min(o.orderDetails.length, 3) - 1 ? "," : ""}
+                </span>
               ))}
-              {o.orderDetails?.length > 4 && (
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100 text-xs font-bold text-gray-500">
-                  +{o.orderDetails.length - 4}
-                </div>
+              {o.orderDetails && o.orderDetails.length > 3 && (
+                <span className="text-gray-400">+{o.orderDetails.length - 3} món khác</span>
               )}
             </div>
             <div className="mt-3 flex items-baseline justify-between border-t border-dashed border-gray-100 pt-3">

@@ -1,13 +1,13 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithReauth } from "./baseQuery";
-import type { CartDetail } from "../types/backend";
+import type { CartItem } from "../types/backend";
 
 export const cartApi = createApi({
   reducerPath: "cartApi",
   baseQuery: baseQueryWithReauth,
   tagTypes: ["Cart", "CartTotal"],
   endpoints: (b) => ({
-    getCart: b.query<CartDetail[], void>({
+    getCart: b.query<CartItem[], void>({
       query: () => "/api/carts/items",
       providesTags: ["Cart"],
     }),
@@ -16,35 +16,47 @@ export const cartApi = createApi({
       providesTags: ["CartTotal"],
     }),
     addToCart: b.mutation<
-      void,
+      string,
       { productId: number; productSizeId: number; quantity: number }
     >({
-      query: (body) => ({ url: "/api/carts/add", method: "POST", body }),
+      query: (body) => ({
+        url: "/api/carts/add",
+        method: "POST",
+        body,
+        responseHandler: (r) => r.text(),
+      }),
       invalidatesTags: ["Cart", "CartTotal"],
     }),
-    incrementItem: b.mutation<void, { productId: number; productSizeId: number }>({
+    incrementItem: b.mutation<string, { productId: number; productSizeId: number }>({
       query: ({ productId, productSizeId }) => ({
         url: `/api/carts/add/${productId}/${productSizeId}`,
         method: "POST",
+        responseHandler: (r) => r.text(),
       }),
       invalidatesTags: ["Cart", "CartTotal"],
     }),
-    decrementItem: b.mutation<void, { productId: number; productSizeId: number }>({
+    decrementItem: b.mutation<string, { productId: number; productSizeId: number }>({
       query: ({ productId, productSizeId }) => ({
         url: `/api/carts/decrease/${productId}/${productSizeId}`,
         method: "PUT",
+        responseHandler: (r) => r.text(),
       }),
       invalidatesTags: ["Cart", "CartTotal"],
     }),
-    removeItem: b.mutation<void, { productId: number; productSizeId: number }>({
+    removeItem: b.mutation<string, { productId: number; productSizeId: number }>({
       query: ({ productId, productSizeId }) => ({
         url: `/api/carts/remove/${productId}/${productSizeId}`,
         method: "DELETE",
+        responseHandler: (r) => r.text(),
       }),
       invalidatesTags: ["Cart", "CartTotal"],
     }),
-    clearCart: b.mutation<void, void>({
-      query: () => ({ url: "/api/carts/clear", method: "DELETE" }),
+    clearCart: b.mutation<string, void>({
+      query: () => ({
+        url: "/api/carts/clear",
+        method: "DELETE",
+        responseHandler: (r) => r.text(),
+      }),
       invalidatesTags: ["Cart", "CartTotal"],
     }),
   }),

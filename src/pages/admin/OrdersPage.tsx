@@ -10,13 +10,13 @@ import Modal from "../../components/common/Modal";
 import Button from "../../components/common/Button";
 import { useAppDispatch } from "../../redux/Store";
 import { showToast } from "../../redux/slices/uiSlice";
-import { fileUrl, formatDate, formatVND, priceAfterDiscount } from "../../utils/format";
+import { formatDate, formatVND, priceAfterDiscount } from "../../utils/format";
 import { nextAdminStatuses, orderStatusColor, orderStatusLabel } from "../../utils/status";
 import { paymentMethodColor, paymentMethodIcon, paymentMethodLabel, paymentMethodShortLabel } from "../../utils/payment";
 import type { Order, OrderStatus } from "../../types/backend";
 
 const statusFilters: (OrderStatus | "")[] = [
-  "", "PENDING", "CONFIRMED", "SHIPPING", "DELIVERED", "COMPLETED", "CANCELED", "RETURNED",
+  "", "PENDING", "CONFIRMED", "SHIPPING", "COMPLETED", "CANCELED",
 ];
 
 export default function OrdersPage() {
@@ -149,33 +149,40 @@ export default function OrdersPage() {
 
             <div className="rounded-lg bg-gray-50 p-3">
               <p className="font-semibold text-gray-800">
-                {selected.receiverName ?? selected.fullName} • {selected.receiverPhone}
+                {selected.fullName}
+                {selected.phone && <> • {selected.phone}</>}
               </p>
-              <p className="mt-1 text-xs text-gray-500">{selected.shippingAddress}</p>
-              {selected.note && (
-                <p className="mt-2 text-xs italic text-gray-500">📝 {selected.note}</p>
+              {selected.address && (
+                <p className="mt-1 text-xs text-gray-500">{selected.address}</p>
               )}
             </div>
 
             <div className="space-y-2">
-              {selected.orderDetails?.map((d) => (
-                <div key={d.orderDetailId} className="flex gap-3 rounded-lg border border-gray-100 p-2">
-                  <img src={fileUrl(d.image)} alt="" className="h-12 w-12 rounded object-cover" />
+              {selected.orderDetails?.map((d, i) => (
+                <div key={i} className="flex items-center gap-3 rounded-lg border border-gray-100 p-2">
+                  <div className="flex h-10 w-10 items-center justify-center rounded bg-gray-100 text-lg">
+                    🍽️
+                  </div>
                   <div className="flex-1 min-w-0">
                     <p className="line-clamp-1 text-xs font-semibold">{d.productName}</p>
-                    <p className="text-xs text-gray-500">{d.sizeName} × {d.quantity}</p>
+                    <p className="text-xs text-gray-500">
+                      {d.sizeName ? `${d.sizeName} × ` : ""}{d.quantity}
+                    </p>
                   </div>
                   <span className="text-xs font-bold">
-                    {formatVND(priceAfterDiscount(d.price, d.discount) * d.quantity)}
+                    {formatVND(priceAfterDiscount(d.price, d.discountApplied ?? 0) * d.quantity)}
                   </span>
                 </div>
               ))}
             </div>
 
             <div className="space-y-1 border-t border-gray-100 pt-3 text-xs">
-              <div className="flex justify-between"><span>Tạm tính</span><span>{formatVND(selected.originalAmount)}</span></div>
-              <div className="flex justify-between text-emerald-600"><span>Giảm giá</span><span>-{formatVND(selected.discountAmount)}</span></div>
-              <div className="flex justify-between"><span>Phí ship</span><span>{formatVND(selected.shippingFee)}</span></div>
+              {selected.originalAmount != null && (
+                <div className="flex justify-between"><span>Tạm tính</span><span>{formatVND(selected.originalAmount)}</span></div>
+              )}
+              {selected.discountAmount != null && (
+                <div className="flex justify-between text-emerald-600"><span>Giảm giá</span><span>-{formatVND(selected.discountAmount)}</span></div>
+              )}
               <div className="flex justify-between text-base font-bold text-rose-500"><span>Tổng</span><span>{formatVND(selected.totalAmount)}</span></div>
             </div>
 
@@ -186,7 +193,7 @@ export default function OrdersPage() {
                   <Button
                     key={s}
                     size="sm"
-                    variant={s === "CANCELED" || s === "RETURNED" ? "danger" : "primary"}
+                    variant={s === "CANCELED" ? "danger" : "primary"}
                     loading={updating}
                     onClick={() => setStatusFor(selected.orderId, s)}
                   >

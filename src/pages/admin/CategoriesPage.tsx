@@ -8,12 +8,13 @@ import {
 } from "../../api/catalogApi";
 import { FullPageSpinner } from "../../components/common/Spinner";
 import Modal from "../../components/common/Modal";
-import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
 import { useAppDispatch } from "../../redux/Store";
 import { showToast } from "../../redux/slices/uiSlice";
 import { fileUrl } from "../../utils/format";
-import type { Category } from "../../types/backend";
+import type { Category, CategoryStatus } from "../../types/backend";
+
+const STATUS_OPTIONS: CategoryStatus[] = ["CAFFE", "SODA", "TEA"];
 
 export default function CategoriesPage() {
   const { data, isLoading } = useListCategoriesQuery({});
@@ -24,37 +25,33 @@ export default function CategoriesPage() {
 
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Category | null>(null);
-  const [name, setName] = useState("");
-  const [desc, setDesc] = useState("");
+  const [categoryStatus, setCategoryStatus] = useState<CategoryStatus>("CAFFE");
   const [image, setImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
 
   const startNew = () => {
     setEditing(null);
-    setName("");
-    setDesc("");
+    setCategoryStatus("CAFFE");
     setImage(null);
     setPreview(null);
     setOpen(true);
   };
   const startEdit = (c: Category) => {
     setEditing(c);
-    setName(c.categoryStatus);
-    setDesc(c.description ?? "");
+    setCategoryStatus((c.categoryStatus as CategoryStatus) ?? "CAFFE");
     setImage(null);
-    setPreview(c.image ? fileUrl(c.image) : null);
+    setPreview(c.categoryImage ? fileUrl(c.categoryImage) : null);
     setOpen(true);
   };
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const fd = new FormData();
-    fd.append("categoryStatus", name);
-    fd.append("description", desc);
-    if (image) fd.append("image", image);
+    fd.append("categoryStatus", categoryStatus);
+    if (image) fd.append("categoryImage", image);
     try {
       if (editing) {
-        await update({ id: editing.categoryId, body: fd }).unwrap();
+        await update({ id: Number(editing.categoryId), body: fd }).unwrap();
         dispatch(showToast({ message: "Đã cập nhật", kind: "success" }));
       } else {
         await create(fd).unwrap();
@@ -69,7 +66,7 @@ export default function CategoriesPage() {
   const onDelete = async (c: Category) => {
     if (!confirm(`Xóa "${c.categoryStatus}"?`)) return;
     try {
-      await del(c.categoryId).unwrap();
+      await del(Number(c.categoryId)).unwrap();
       dispatch(showToast({ message: "Đã xóa", kind: "success" }));
     } catch (e: any) {
       dispatch(showToast({ message: e?.data?.message ?? "Lỗi", kind: "error" }));
@@ -89,15 +86,12 @@ export default function CategoriesPage() {
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {data?.content.map((c) => (
-          <div key={c.categoryId} className="overflow-hidden rounded-2xl bg-white shadow-sm">
+          <div key={String(c.categoryId)} className="overflow-hidden rounded-2xl bg-white shadow-sm">
             <div className="aspect-video overflow-hidden bg-gray-100">
-              {c.image && <img src={fileUrl(c.image)} alt="" className="h-full w-full object-cover" />}
+              {c.categoryImage && <img src={fileUrl(c.categoryImage)} alt="" className="h-full w-full object-cover" />}
             </div>
             <div className="p-3">
               <p className="font-bold text-gray-800">{c.categoryStatus}</p>
-              {c.description && (
-                <p className="mt-1 line-clamp-1 text-xs text-gray-500">{c.description}</p>
-              )}
               <div className="mt-2 flex justify-end gap-1">
                 <button
                   onClick={() => startEdit(c)}
@@ -120,7 +114,7 @@ export default function CategoriesPage() {
       <Modal open={open} onClose={() => setOpen(false)} title={editing ? "Sửa danh mục" : "Thêm danh mục"}>
         <form onSubmit={onSubmit} className="space-y-3">
           <label className="block">
-            <span className="mb-1 block text-sm font-medium text-gray-700">Ảnh</span>
+            <span className="mb-1 block text-sm font-medium text-gray-700">Ảnh danh mục</span>
             <label className="relative flex aspect-video w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:border-rose-400">
               {preview ? (
                 <img src={preview} alt="" className="h-full w-full object-cover" />
@@ -143,17 +137,21 @@ export default function CategoriesPage() {
               />
             </label>
           </label>
-          <Input
-            label="Tên danh mục"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-          <Input
-            label="Mô tả"
-            value={desc}
-            onChange={(e) => setDesc(e.target.value)}
-          />
+          <label className="block">
+            <span className="mb-1 block text-sm font-medium text-gray-700">Loại danh mục</span>
+            <select
+              value={categoryStatus}
+              onChange={(e) => setCategoryStatus(e.target.value as CategoryStatus)}
+              className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm"
+              required
+            >
+              {STATUS_OPTIONS.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+          </label>
           <div className="flex justify-end gap-2 pt-3">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Hủy
